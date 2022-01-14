@@ -13,7 +13,7 @@ Two patient pairs are discordant if the pair with greater observed benefit has l
 
 library(remotes)
 
-remotes::install_github("CHMMaas/CforBenefit")
+remotes::install_github("CHMMaas/HTEPredictionMetrics")
 
 For an example of how to use the "C.for.Benefit" function, have look at "Examples" under "?C.for.Benefit".
 
