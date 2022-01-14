@@ -25,7 +25,7 @@
 #' @param message boolean; TRUE display computation time message; FALSE do not display message (default=TRUE)
 #' @param measure measure option of matchit function from MatchIt package (default="nearest")
 #' @param distance distance option of matchit function from MatchIt package (default="mahalanobis)
-#' @param estimand default ATT meaning all treated patients get matched with control patient
+#' @param estimand default ATC meaning treated units are selected to be matched with control units
 #' @param replace boolean; TRUE if matching with replacement, FALSE if matching without replacement
 #' @param ... additional arguments for matchit function from MatchIt package
 #'
@@ -63,13 +63,13 @@
 #' CB.out <- C.for.Benefit(Y=Y, W=W, X=X, p.0=p.0, p.1=p.1, tau.hat=tau.hat,
 #'                         CI=TRUE, nr.bootstraps=100, message=TRUE,
 #'                         measure="nearest", distance="mahalanobis",
-#'                         estimand="ATT", replace=FALSE)
+#'                         estimand="ATC", replace=FALSE)
 #' CB.out
 C.for.Benefit <- function(Y, W, X,
                           p.0, p.1, tau.hat,
                           CI=FALSE, nr.bootstraps=50, message=TRUE,
                           measure="nearest", distance="mahalanobis",
-                          estimand="ATT", replace=FALSE, ...){
+                          estimand="ATC", replace=FALSE, ...){
   # ensure correct data types
   stopifnot("W must be a vector" = is.vector(W))
   stopifnot("X must be a vector or matrix" = is.matrix(X) | is.vector(X))
