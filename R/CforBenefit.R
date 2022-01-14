@@ -25,6 +25,8 @@
 #' @param message boolean; TRUE display computation time message; FALSE do not display message (default=TRUE)
 #' @param measure measure option of matchit function from MatchIt package (default="nearest")
 #' @param distance distance option of matchit function from MatchIt package (default="mahalanobis)
+#' @param estimand default ATT meaning all treated patients get matched with control patient
+#' @param replace boolean; TRUE if matching with replacement, FALSE if matching without replacement
 #' @param ... additional arguments for matchit function from MatchIt package
 #'
 #' @return The output of the C.for.benefit function is a "list" with the following components.
@@ -60,12 +62,14 @@
 #' tau.hat <- runif(n)
 #' CB.out <- C.for.Benefit(Y=Y, W=W, X=X, p.0=p.0, p.1=p.1, tau.hat=tau.hat,
 #'                         CI=TRUE, nr.bootstraps=100, message=TRUE,
-#'                         measure="nearest", distance="mahalanobis")
+#'                         measure="nearest", distance="mahalanobis",
+#'                         estimand="ATT", replace=FALSE)
 #' CB.out
 C.for.Benefit <- function(Y, W, X,
                           p.0, p.1, tau.hat,
                           CI=FALSE, nr.bootstraps=50, message=TRUE,
-                          measure="nearest", distance="mahalanobis", ...){
+                          measure="nearest", distance="mahalanobis",
+                          estimand="ATT", replace=FALSE, ...){
   # ensure correct data types
   stopifnot("W must be a vector" = is.vector(W))
   stopifnot("X must be a vector or matrix" = is.matrix(X) | is.vector(X))
@@ -85,15 +89,6 @@ C.for.Benefit <- function(Y, W, X,
   stopifnot("CI must be a boolean (TRUE or FALSE)" = isTRUE(CI)|isFALSE(CI))
   stopifnot("message must be a boolean (TRUE or FALSE)" = isTRUE(message)|isFALSE(message))
 
-  # patient can only be matched to one other patient from other treatment arm
-  if (sum(W==1) <= sum(W==0)){
-    # ATT: all treated patients get matched with control patient
-    estimand.meth <- "ATT"
-  } else if (sum(W==1) > sum(W==0)){
-    # ATC: all control patients get matched with treated patient
-    estimand.meth <- "ATC"
-  }
-
   # combine all data in one dataframe
   data.df <- data.frame(match.id=1:length(Y),
                         W=W, X=X, Y=Y,
@@ -102,7 +97,7 @@ C.for.Benefit <- function(Y, W, X,
   # match on covariates
   matched <- MatchIt::matchit(W ~ X, data=data.df,
                               method=measure, distance=distance,
-                              estimand=estimand.meth, ...) # TODO: add to documentations that the ... are for matchit
+                              estimand=estimand, replace=replace, ...) # TODO: add to documentations that the ... are for matchit
   matched.patients <- MatchIt::match.data(matched)
   matched.patients$subclass <- as.numeric(matched.patients$subclass)
 

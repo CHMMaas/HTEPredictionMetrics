@@ -16,6 +16,8 @@ C.for.Benefit(
   message = TRUE,
   measure = "nearest",
   distance = "mahalanobis",
+  estimand = "ATT",
+  replace = FALSE,
   ...
 )
 }
@@ -41,6 +43,10 @@ C.for.Benefit(
 \item{measure}{measure option of matchit function from MatchIt package (default="nearest")}
 
 \item{distance}{distance option of matchit function from MatchIt package (default="mahalanobis)}
+
+\item{estimand}{default ATT meaning all treated patients get matched with control patient}
+
+\item{replace}{boolean; TRUE if matching with replacement, FALSE if matching without replacement}
 
 \item{...}{additional arguments for matchit function from MatchIt package}
 }
@@ -90,6 +96,7 @@ p.1 <- runif(n)
 tau.hat <- runif(n)
 CB.out <- C.for.Benefit(Y=Y, W=W, X=X, p.0=p.0, p.1=p.1, tau.hat=tau.hat,
                         CI=TRUE, nr.bootstraps=100, message=TRUE,
-                        measure="nearest", distance="mahalanobis")
+                        measure="nearest", distance="mahalanobis",
+                        estimand="ATT", replace=FALSE)
 CB.out
 }
