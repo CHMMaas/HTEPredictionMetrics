@@ -1,14 +1,10 @@
-#' @title C-for-benefit
-#' @description This function calculates the C-for-benefit, as proposed by
-#' D. van Klaveren et al. (2018), which measures the discriminative ability of
-#' models predicting individualized treatment effect. The C-for-benefit
-#' corresponds to the probability that from two randomly chosen matched patient
-#' pairs with unequal observed treatment effect, the pair with greater observed
-#' treatment effect also has a higher predicted treatment effect.
+#' @title E-for-benefit
+#' @description This function calculates E-for-benefit statistics.
 #'
-#' @importFrom Hmisc rcorr.cens
 #' @importFrom dplyr slice
 #' @importFrom stats quantile
+#' @importFrom stats loess
+#' @importFrom stats predict
 #'
 #' @param Y a vector of outcomes
 #' @param W a vector of treatment assignment; 1 for active treatment; 0 for control
@@ -26,26 +22,56 @@
 #' @param replace boolean; TRUE if matching with replacement, FALSE if matching without replacement
 #' @param ... additional arguments for matchit function from MatchIt package
 #'
-#' @return The output of the C.for.benefit function is a "list" with the following components.
+#' @return The output of the E.for.benefit function is a "list" with the following components.
 #'
 #' matched.patients
 #'
 #' a dataframe containing the matched patients.
 #'
 #'
-#' c.for.benefit
+#' Eavg.for.benefit
 #'
-#' the resulting C-for-benefit value.
-#'
-#'
-#' lower.CI
-#'
-#' the lower bound of the confidence interval (if CI = TRUE).
+#' the resulting Eavg-for-Benefit value.
 #'
 #'
-#'  upper.CI
+#' Eavg.lower.CI
 #'
-#' the upper bound of the confidence interval (if CI = TRUE).
+#' the lower bound of the confidence interval of the Eavg-for-Benefit (if CI = TRUE).
+#'
+#'
+#' Eavg.upper.CI
+#'
+#' the upper bound of the confidence interval of the Eavg-for-Benefit (if CI = TRUE).
+#'
+#'
+#' E50.for.benefit
+#'
+#' the resulting E50-for-Benefit value.
+#'
+#'
+#' E50.lower.CI
+#'
+#' the lower bound of the confidence interval of the E50-for-Benefit (if CI = TRUE).
+#'
+#'
+#' E50.upper.CI
+#'
+#' the upper bound of the confidence interval of the E50-for-Benefit (if CI = TRUE).
+#'
+#'
+#' E90.for.benefit
+#'
+#' the resulting E90-for-Benefit value.
+#'
+#'
+#' E90.lower.CI
+#'
+#' the lower bound of the confidence interval of the E90-for-Benefit (if CI = TRUE).
+#'
+#'
+#' E90.upper.CI
+#'
+#' the upper bound of the confidence interval of the E90-for-Benefit (if CI = TRUE).
 #' @export
 #'
 #' @examples
@@ -57,13 +83,13 @@
 #' p.0 <- runif(n)
 #' p.1 <- runif(n)
 #' tau.hat <- runif(n)
-#' CB.out <- C.for.Benefit(Y=Y, W=W, X=X, p.0=p.0, p.1=p.1, tau.hat=tau.hat,
+#' EB.out <- E.for.Benefit(Y=Y, W=W, X=X, p.0=p.0, p.1=p.1, tau.hat=tau.hat,
 #'                         CI=TRUE, nr.bootstraps=100, message=TRUE,
 #'                         matched.patients=NULL,
 #'                         measure="nearest", distance="mahalanobis",
 #'                         estimand=NULL, replace=FALSE)
-#' CB.out
-C.for.Benefit <- function(Y, W, X,
+#' EB.out
+E.for.Benefit <- function(Y, W, X,
                           p.0, p.1, tau.hat,
                           CI=FALSE, nr.bootstraps=50, message=TRUE,
                           matched.patients=NULL,
@@ -91,24 +117,31 @@ C.for.Benefit <- function(Y, W, X,
   if (is.null(matched.patients)){
     # compute matched pairs
     matched.patients <- match.patients(Y, W, X,
-                                     p.0, p.1, tau.hat,
-                                     measure="nearest", distance="mahalanobis",
-                                     estimand=NULL, replace=FALSE, ...)
+                                       p.0, p.1, tau.hat,
+                                       measure="nearest", distance="mahalanobis",
+                                       estimand=NULL, replace=FALSE, ...)
   }
   else{
     # use the dataframe provided by the user
     stopifnot("matched.patients must be a dataframe" = is.data.frame(matched.patients))
   }
 
-  # calculate C-for-benefit
-  cindex <- Hmisc::rcorr.cens(matched.patients$matched.tau.hat, matched.patients$matched.tau.obs)
-  c.for.benefit <- cindex["C Index"][[1]]
+  # perform smoothing on matched patient pairs
+  loess.calibrate <- stats::loess(matched.tau.obs ~ matched.tau.hat, data=matched.patients)
+  tau.smoothed <- predict(loess.calibrate, newdata=matched.patients)
+
+  # calculate calibration metrics
+  Eavg.for.benefit <- mean(abs(tau.smoothed - matched.patients$matched.tau.hat))
+  E50.for.benefit <- stats::median(abs(tau.smoothed - matched.patients$matched.tau.hat))
+  E90.for.benefit <- as.numeric(stats::quantile(abs(tau.smoothed - matched.patients$matched.tau.hat), probs=0.9))
 
   if (CI){
     if (message){
       cat('Calculating confidence interval... Taking too long? Lower the number of bootstraps. \n')
     }
-    CB.for.CI <- c()
+    Eavg.for.CI <- c()
+    E50.for.CI <- c()
+    E90.for.CI <- c()
     for (B in 1:nr.bootstraps){
       # bootstrap matched patient pairs
       subclass.IDs <- unique(matched.patients$subclass)
@@ -119,17 +152,33 @@ C.for.Benefit <- function(Y, W, X,
       }
       duplicated.matched.patients <- dplyr::slice(matched.patients, dup.subclass.IDs)
 
-      # calculate C-for-benefit for duplicated matched pairs
-      duplicated.cindex <- Hmisc::rcorr.cens(duplicated.matched.patients$matched.tau.hat, duplicated.matched.patients$matched.tau.obs)
-      CB.for.CI <- c(CB.for.CI, duplicated.cindex["C Index"][[1]])
+      # perform smoothing on matched patient pairs
+      loess.calibrate.B <- stats::loess(matched.tau.obs ~ matched.tau.hat, data=duplicated.matched.patients)
+      tau.smoothed.B <- stats::predict(loess.calibrate, newdata=duplicated.matched.patients)
+
+      # calculate calibration metrics
+      Eavg.for.CI <- c(Eavg.for.CI, mean(abs(tau.smoothed.B - duplicated.matched.patients$matched.tau.hat)))
+      E50.for.CI <- c(E50.for.CI, stats::median(abs(tau.smoothed.B - duplicated.matched.patients$matched.tau.hat)))
+      E90.for.CI <- c(E90.for.CI, as.numeric(stats::quantile(abs(tau.smoothed.B - duplicated.matched.patients$matched.tau.hat), probs=0.9)))
     }
-    lower.CI <- as.numeric(stats::quantile(CB.for.CI, 0.025))
-    upper.CI <- as.numeric(stats::quantile(CB.for.CI, 0.975))
+    Eavg.lower.CI <- as.numeric(stats::quantile(Eavg.for.CI, 0.025))
+    Eavg.upper.CI <- as.numeric(stats::quantile(Eavg.for.CI, 0.975))
+    E50.lower.CI <- as.numeric(stats::quantile(E50.for.CI, 0.025))
+    E50.upper.CI <- as.numeric(stats::quantile(E50.for.CI, 0.975))
+    E90.lower.CI <- as.numeric(stats::quantile(E90.for.CI, 0.025))
+    E90.upper.CI <- as.numeric(stats::quantile(E90.for.CI, 0.975))
   }
   else{
-    lower.CI <- NA
-    upper.CI <- NA
+    Eavg.lower.CI <- NA
+    Eavg.upper.CI <- NA
+    E50.lower.CI <- NA
+    E50.upper.CI <- NA
+    E90.lower.CI <- NA
+    E90.upper.CI <- NA
   }
 
-  return(list(matched.patients=matched.patients, c.for.benefit=c.for.benefit, lower.CI=lower.CI, upper.CI=upper.CI))
+  return(list(matched.patients=matched.patients,
+              Eavg.for.benefit=Eavg.for.benefit, Eavg.lower.CI=Eavg.lower.CI, Eavg.upper.CI=Eavg.upper.CI,
+              E50.for.benefit=E50.for.benefit, E50.lower.CI=E50.lower.CI, E50.upper.CI=E50.upper.CI,
+              E90.for.benefit=E90.for.benefit, E90.lower.CI=E90.lower.CI, E90.upper.CI=E90.upper.CI))
 }

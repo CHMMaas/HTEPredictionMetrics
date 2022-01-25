@@ -46,6 +46,12 @@ The output of the match.patients function is a dataframe named 'matched.patients
 }
 \description{
 This function matches patient pairs using the MatchIt package.
+Observed treatment effect was defined as the difference between outcomes in
+pairs of patients matched on patient characteristics (or on individualized
+treatment effect predictions). Predicted treatment effect of a matched pair
+was defined as the difference between the predicted outcome probability of
+the untreated patient minus the predicted outcome probability of the treated
+patient.
 }
 \examples{
 library(HTEPredictionMetrics)
