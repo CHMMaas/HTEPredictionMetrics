@@ -35,7 +35,7 @@ match.patients(
 
 \item{distance}{distance option of matchit function from MatchIt package (default="mahalanobis)}
 
-\item{estimand}{default NULL meaning that all patients in the smallest treatment arm get matched with one patient in other treatment arm; can also be "ATT", "ATC" or "ATE" as well. See Details of matchit function of MatchIt for information on how this argument is used.}
+\item{estimand}{default NULL meaning that all patients in the smallest treatment arm get matched with one patient in other treatment arm; estimand can also be "ATT", "ATC" or "ATE", see Details of matchit function of MatchIt for more information}
 
 \item{replace}{boolean; TRUE if matching with replacement, FALSE if matching without replacement}
 
