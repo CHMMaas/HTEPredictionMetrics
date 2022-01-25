@@ -11,8 +11,9 @@
 #' as the difference between the predicted outcome probability of the untreated
 #' patient minus the predicted outcome probability of the treated patient.
 #'
-#' @importFrom MatchIt matchit
+#' @importFrom Hmisc rcorr.cens
 #' @importFrom dplyr slice
+#' @importFrom stats quantile
 #'
 #' @param Y a vector of outcomes
 #' @param W a vector of treatment assignment; 1 for active treatment; 0 for control
@@ -23,6 +24,7 @@
 #' @param CI boolean; TRUE compute confidence interval; default=FALSE do not compute confidence interval (default=FALSE)
 #' @param nr.bootstraps boolean; number of bootstraps to use for confidence interval computation (default=1)
 #' @param message boolean; TRUE display computation time message; FALSE do not display message (default=TRUE)
+#' @param matched.patients dataframe; optional if you want to provide your own dataframe of matched patients, otherwise patients will be matched (default=NULL)
 #' @param measure measure option of matchit function from MatchIt package (default="nearest")
 #' @param distance distance option of matchit function from MatchIt package (default="mahalanobis)
 #' @param estimand default ATC meaning treated units are selected to be matched with control units
@@ -62,14 +64,16 @@
 #' tau.hat <- runif(n)
 #' CB.out <- C.for.Benefit(Y=Y, W=W, X=X, p.0=p.0, p.1=p.1, tau.hat=tau.hat,
 #'                         CI=TRUE, nr.bootstraps=100, message=TRUE,
+#'                         matched.patients=NULL,
 #'                         measure="nearest", distance="mahalanobis",
-#'                         estimand="ATC", replace=FALSE)
+#'                         estimand=NULL, replace=FALSE)
 #' CB.out
 C.for.Benefit <- function(Y, W, X,
                           p.0, p.1, tau.hat,
                           CI=FALSE, nr.bootstraps=50, message=TRUE,
+                          matched.patients=NULL,
                           measure="nearest", distance="mahalanobis",
-                          estimand="ATC", replace=FALSE, ...){
+                          estimand=NULL, replace=FALSE, ...){
   # ensure correct data types
   stopifnot("W must be a vector" = is.vector(W))
   stopifnot("X must be a vector or matrix" = is.matrix(X) | is.vector(X))
@@ -89,37 +93,19 @@ C.for.Benefit <- function(Y, W, X,
   stopifnot("CI must be a boolean (TRUE or FALSE)" = isTRUE(CI)|isFALSE(CI))
   stopifnot("message must be a boolean (TRUE or FALSE)" = isTRUE(message)|isFALSE(message))
 
-  # combine all data in one dataframe
-  data.df <- data.frame(match.id=1:length(Y),
-                        W=W, X=X, Y=Y,
-                        p.0=p.0, p.1=p.1, tau.hat=tau.hat)
+  if (is.null(matched.patients)){
+    # compute matched pairs
+    matched.patients <- match.patients(Y, W, X,
+                                     p.0, p.1, tau.hat,
+                                     measure="nearest", distance="mahalanobis",
+                                     estimand=NULL, replace=FALSE, ...)
+  }
+  else{
+    # use the dataframe provided by the user
+    stopifnot("matched.patients must be a dataframe" = is.data.frame(matched.patients))
+  }
 
-  # match on covariates
-  matched <- MatchIt::matchit(W ~ X, data=data.df,
-                              method=measure, distance=distance,
-                              estimand=estimand, replace=replace, ...) # TODO: add to documentations that the ... are for matchit
-  matched.patients <- MatchIt::match.data(matched)
-  matched.patients$subclass <- as.numeric(matched.patients$subclass)
-
-  # sort on subclass and W
-  matched.patients <- matched.patients[with(matched.patients, order(subclass, 1-W)), ]
-
-  # matched observed treatment effect
-  observed.TE <- stats::aggregate(matched.patients, list(matched.patients$subclass), diff)$Y
-  matched.patients$matched.tau.obs <- rep(observed.TE, each=2)
-
-  # matched p.0 = P[Y = 1| W = 0] so the probability of an outcome given no treatment of the untreated patient
-  matched.p.0 <- (1-matched.patients$W)*matched.patients$p.0
-  matched.patients$matched.p.0 <- rep(matched.p.0[matched.p.0!=0], each=2)
-
-  # matched p.1 = P[Y = 1| W = 1] so the probability of an outcome given no treatment of the treated patient
-  matched.p.1 <- matched.patients$W*matched.patients$p.1
-  matched.patients$matched.p.1 <- rep(matched.p.1[matched.p.1!=0], each=2)
-
-  # matched treatment effect
-  matched.patients$matched.tau.hat <- matched.patients$matched.p.0 - matched.patients$matched.p.1
-
-  # C-for-benefit
+  # calculate C-for-benefit
   cindex <- Hmisc::rcorr.cens(matched.patients$matched.tau.hat, matched.patients$matched.tau.obs)
   c.for.benefit <- cindex["C Index"][[1]]
 
@@ -136,7 +122,7 @@ C.for.Benefit <- function(Y, W, X,
       for (i in sample.subclass){
         dup.subclass.IDs <- c(dup.subclass.IDs, matched.patients[matched.patients$subclass==i, 'match.id'])
       }
-      duplicated.matched.patients <- slice(matched.patients, dup.subclass.IDs)
+      duplicated.matched.patients <- dplyr::slice(matched.patients, dup.subclass.IDs)
 
       # calculate C-for-benefit for duplicated matched pairs
       duplicated.cindex <- Hmisc::rcorr.cens(duplicated.matched.patients$matched.tau.hat, duplicated.matched.patients$matched.tau.obs)

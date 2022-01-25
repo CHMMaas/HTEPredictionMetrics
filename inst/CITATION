@@ -5,7 +5,7 @@ citEntry(
   title    = "HTEPredictionMetrics: Heterogeneous Treatment Effect Prediciton Metrics",
   author   = "Carolien C.H.M. Maas",
   year     = "2022",
-  note     = "R package version 1.0",
+  note     = "R package version 0.1.0",
   url      = "https://github.com/CHMMaas/HTEPredictionMetrics",
   textVersion = " Carolien C.H.M. Maas (2022). HTEPredictionMetrics: Heterogeneous Treatment Effect Prediciton Metrics. R package version 1.0. https://github.com/CHMMaas/HTEPredictionMetrics"
 )

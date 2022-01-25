@@ -14,9 +14,10 @@ C.for.Benefit(
   CI = FALSE,
   nr.bootstraps = 50,
   message = TRUE,
+  matched.patients = NULL,
   measure = "nearest",
   distance = "mahalanobis",
-  estimand = "ATC",
+  estimand = NULL,
   replace = FALSE,
   ...
 )
@@ -39,6 +40,8 @@ C.for.Benefit(
 \item{nr.bootstraps}{boolean; number of bootstraps to use for confidence interval computation (default=1)}
 
 \item{message}{boolean; TRUE display computation time message; FALSE do not display message (default=TRUE)}
+
+\item{matched.patients}{dataframe; optional if you want to provide your own dataframe of matched patients, otherwise patients will be matched (default=NULL)}
 
 \item{measure}{measure option of matchit function from MatchIt package (default="nearest")}
 
@@ -96,7 +99,8 @@ p.1 <- runif(n)
 tau.hat <- runif(n)
 CB.out <- C.for.Benefit(Y=Y, W=W, X=X, p.0=p.0, p.1=p.1, tau.hat=tau.hat,
                         CI=TRUE, nr.bootstraps=100, message=TRUE,
+                        matched.patients=NULL,
                         measure="nearest", distance="mahalanobis",
-                        estimand="ATC", replace=FALSE)
+                        estimand=NULL, replace=FALSE)
 CB.out
 }
