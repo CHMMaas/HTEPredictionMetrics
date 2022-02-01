@@ -1,7 +1,7 @@
 # HTEPredictionMetrics package
 This package includes various metrics that can be used to evaluate heterogeneous treatment effect predictions.
 
-# Install using 
+# Install 
 
 library(remotes)
 
