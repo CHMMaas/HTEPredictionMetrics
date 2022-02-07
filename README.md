@@ -8,7 +8,7 @@ library(remotes)
 remotes::install_github("CHMMaas/HTEPredictionMetrics")
 
 # E.for.Benefit
-This function calculates the E-for-benefit metrics, i.e. Eavg-for-benefit, E50-for-benefit, and E90-for-benefit, as proposed by C.C.H.M. Maas et al. (2022) by matching patients based on patient characterstics or individualized treatment effect predictions. 
+This function calculates the calibration metrics, i.e. the E-for-benefit metrics: Eavg-for-benefit, E50-for-benefit, and E90-for-benefit, as proposed by C.C.H.M. Maas et al. (2022) by matching patients based on patient characterstics or individualized treatment effect predictions. 
 Calibration can be assessed by a smoothed calibration curve obtained by a local regression, with default values for span and degree of polynomials, of the observed treatment effect of matched patient pairs on predicted treatment effect of matched patient pairs.
 The Eavg-for-benefit, E50-for-benefit, and E90-for-benefit were defined as the weighted average, median, and 90th percentile of the absolute differences between the smoothed calibration curve and the diagonal line of perfect calibration.
 
