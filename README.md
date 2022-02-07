@@ -8,7 +8,9 @@ library(remotes)
 remotes::install_github("CHMMaas/HTEPredictionMetrics")
 
 # E.for.Benefit
-This function calculates the E-for-benefit metrics, i.e. Eavg-for-benefit, E50-for-benefit, and E90-for-benefit, as proposed by C.C.H.M. Maas et al. (2022) by matching patients based on patient characterstics or individualized treatment effect predictions.
+This function calculates the E-for-benefit metrics, i.e. Eavg-for-benefit, E50-for-benefit, and E90-for-benefit, as proposed by C.C.H.M. Maas et al. (2022) by matching patients based on patient characterstics or individualized treatment effect predictions. 
+Calibration can be assessed by a smoothed calibration curve obtained by a local regression, with default values for span and degree of polynomials, of the observed treatment effect of matched patient pairs on predicted treatment effect of matched patient pairs.
+The Eavg-for-benefit, E50-for-benefit, and E90-for-benefit were defined as the weighted average, median, and 90th percentile of the absolute differences between the smoothed calibration curve and the diagonal line of perfect calibration.
 
 For an example of how to use the "E.for.Benefit" function, have look at "Examples" under "?E.for.Benefit".
 
@@ -27,6 +29,8 @@ For an example of how to use the "C.for.Benefit" function, have look at "Example
 
 # OP.for.Benefit
 This function calculates the overall performance metrics, i.e. the logistic-loss-for-benefit and Brier-for-benefit, as proposed by C.C.H.M. Maas et al. (2022) by matching patients based on patient characterstics or individualized treatment effect predictions.
+The log-loss-for-benefit was defined as the average logarithmic distance between predicted and observed treatment effect of matched patient pairs. 
+The Brier-for-benefit was defined as the average squared distance between predicted and observed treatment effect of matched patient pairs.
 
 For an example of how to use the "OP.for.Benefit" function, have look at "Examples" under "?OP.for.Benefit".
 
