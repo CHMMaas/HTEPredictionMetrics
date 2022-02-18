@@ -39,7 +39,7 @@ For an example of how to use the "OP.for.Benefit" function, have look at "Exampl
 # val.surv.mi
 This function can calculate the intercept, slope, and C-index for survival outcomes for complete case analysis and predictions from multiple imputed data sets.
 
-# rubin.combine
+# Rubin.combine
 This function combines multiple estimates with multiples standard errors using the Rubin's rule.
 
 # References
