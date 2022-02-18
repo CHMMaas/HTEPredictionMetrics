@@ -35,6 +35,7 @@ The Brier-for-benefit was defined as the average squared distance between predic
 For an example of how to use the "OP.for.Benefit" function, have look at "Examples" under "?OP.for.Benefit".
 
 # Other functions
+Some other useful functions included in this package.
 
 # val.surv.mi
 This function can calculate the intercept, slope, and C-index for survival outcomes for complete case analysis and predictions from multiple imputed data sets.
