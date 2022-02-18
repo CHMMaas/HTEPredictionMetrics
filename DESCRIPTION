@@ -12,6 +12,10 @@ LazyData: true
 RoxygenNote: 7.1.1
 Imports: 
     dplyr (>= 1.0.7),
+    grDevices (>= 4.1.0),
     Hmisc (>= 4.5.0),
     MatchIt (>= 4.3.2),
-    stats (>= 4.1.0)
+    rms (>= 6.2.0),
+    stats (>= 4.1.0),
+    survival (>= 3.2.11),
+    utils (>= 4.1.0)
