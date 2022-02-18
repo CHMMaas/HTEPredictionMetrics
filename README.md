@@ -34,7 +34,15 @@ The Brier-for-benefit was defined as the average squared distance between predic
 
 For an example of how to use the "OP.for.Benefit" function, have look at "Examples" under "?OP.for.Benefit".
 
-# Reference
+# Other functions
+
+# val.surv.mi
+This function can calculate the intercept, slope, and C-index for survival outcomes for complete case analysis and predictions from multiple imputed data sets.
+
+# rubin.combine
+This function combines multiple estimates with multiples standard errors using the Rubin's rule.
+
+# References
 
 van Klaveren D, Steyerberg EW, Serruys PW, Kent DM. The proposed 'concordance-statistic for benefit' provided a useful metric when modeling heterogeneous treatment effects. J Clin Epidemiol. 2018 Feb;94:59-68. doi: 10.1016/j.jclinepi.2017.10.021. Epub 2017 Nov 11. PMID: 29132832; PMCID: PMC7448760.
 
