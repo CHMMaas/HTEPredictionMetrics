@@ -9,10 +9,13 @@ val.surv.mi(
   y,
   g = 5,
   main = "",
+  file_path = "",
   save_plots = FALSE,
   time = NULL,
   lim = c(0, 1),
-  dist = TRUE
+  dist = TRUE,
+  CI = FALSE,
+  df = 3
 )
 }
 \arguments{
@@ -24,6 +27,8 @@ val.surv.mi(
 
 \item{main}{Plot label, default=""}
 
+\item{file_path}{directory to save figures to, only used if save_plots=TRUE, default=""}
+
 \item{save_plots}{Save plots to file, default=FALSE}
 
 \item{time}{Time point at which to evaluate the predicted probabilities, default=NULL (not entered), the maximum time point will be taken}
@@ -31,13 +36,17 @@ val.surv.mi(
 \item{lim}{limit, default=NULL}
 
 \item{dist}{distribution, default=TRUE}
+
+\item{CI}{plot confidence interval, default=FALSE}
+
+\item{df}{degrees of freedom to compute confidence interval, default=3}
 }
 \value{
 The output of the val_surv_mi function is a "list" with the following components.
 
 main
 
-Plot label
+Main title of plots.
 
 
 n
@@ -52,17 +61,22 @@ quantiles
 
 p.mi
 
-predicted probabilities for each imputed data set.
+predicted survival for each imputed data set.
 
 
 obs.mi
 
-observed probabilities lower bound of 95% confidence interval.
+observed survival for each imputed data set.
 
 
 obs.mi.lower
 
-observed probabilities lower bound of 95% confidence interval.
+lower bound of 95% confidence interval of observed survival.
+
+
+obs.mi.upper
+
+upper bound of 95% confidence interval of observed survival.
 
 
 int
@@ -72,12 +86,12 @@ intercept
 
 int.lower
 
-intercept lower bound of 95% confidence interval.
+lower bound of 95% confidence interval of intercept.
 
 
 int.upper
 
-intercept upper bound of 95% confidence interval.
+upper bound of 95% confidence interval of intercept.
 
 
 slope
@@ -87,24 +101,26 @@ slope estimate
 
 slope.lower
 
-slope estimate lower bound of 95% confidence terval.
+lower bound of 95% confidence interval of slope.
 
 
 slope.upper
 
-slope estimate upper bound of 95% confidence terval.
+upper bound of 95% confidence interval of slope.
+
 
 cindex
 
 C-index
 
+
 cindex.lower
 
-C-index lower bound of 95% confidence terval.
+lower bound of 95% confidence interval of C-index.
 
 cindex.upper
 
-C-index upper bound of 95% confidence terval.
+upper bound of 95% confidence interval of C-index.
 }
 \description{
 This function calculates intercept, slope, and C-index for risk predictions of multiple imputed data set(s).
