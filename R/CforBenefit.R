@@ -11,7 +11,7 @@
 #' @importFrom stats quantile
 #'
 #' @param Y a vector of outcomes
-#' @param W a vector of treatment assignment; 1 for active treatment; 0 for control (or alternative treatment), note: make sure that W consists only of values of 0 and 1
+#' @param W a vector of treatment assignment; 1 for active treatment; 0 for control (or alternative treatment), make sure that W consists only of values of 0 and 1
 #' @param X a matrix of patient characteristics or individualized treatment effect predictions
 #' @param p.0 a vector of outcome probabilities under control (or alternative treatment)
 #' @param p.1 a vector of outcome probabilities under active treatment
