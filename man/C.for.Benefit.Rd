@@ -25,11 +25,11 @@ C.for.Benefit(
 \arguments{
 \item{Y}{a vector of outcomes}
 
-\item{W}{a vector of treatment assignment; 1 for active treatment; 0 for control}
+\item{W}{a vector of treatment assignment; 1 for active treatment; 0 for control (or alternative treatment), note: make sure that W consists only of values of 0 and 1}
 
 \item{X}{a matrix of patient characteristics or individualized treatment effect predictions}
 
-\item{p.0}{a vector of outcome probabilities under control}
+\item{p.0}{a vector of outcome probabilities under control (or alternative treatment)}
 
 \item{p.1}{a vector of outcome probabilities under active treatment}
 
