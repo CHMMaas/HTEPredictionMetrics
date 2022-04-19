@@ -131,7 +131,7 @@ E.for.Benefit <- function(Y, W, X,
   }
 
   # perform smoothing on matched patient pairs
-  loess.calibrate <- stats::loess(matched.tau.obs ~ matched.tau.hat, data=matched.patients, span=1)
+  loess.calibrate <- stats::loess(matched.tau.obs ~ matched.tau.hat, data=matched.patients)
   if (plot.CI){
     # compute standard error if plot around LOESS needs to be computed
     loess.result <- predict(loess.calibrate,
