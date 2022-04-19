@@ -14,6 +14,7 @@ E.for.Benefit(
   CI = FALSE,
   nr.bootstraps = 50,
   message = TRUE,
+  span = 0.75,
   plot = FALSE,
   plot.CI = FALSE,
   matched.patients = NULL,
@@ -42,6 +43,8 @@ E.for.Benefit(
 \item{nr.bootstraps}{boolean; number of bootstraps to use for confidence interval computation (default=1)}
 
 \item{message}{boolean; TRUE display computation time message; FALSE do not display message (default=TRUE)}
+
+\item{span}{the parameter α which controls the degree of smoothing (default=0.75)}
 
 \item{plot}{boolean; TRUE computes the calibration plot of predicted versus observed treatment effect of matched patients}
 

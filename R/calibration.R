@@ -15,6 +15,7 @@
 #' @param CI boolean; TRUE compute confidence interval; default=FALSE do not compute confidence interval (default=FALSE)
 #' @param nr.bootstraps boolean; number of bootstraps to use for confidence interval computation (default=1)
 #' @param message boolean; TRUE display computation time message; FALSE do not display message (default=TRUE)
+#' @param span the parameter α which controls the degree of smoothing (default=0.75)
 #' @param plot boolean; TRUE computes the calibration plot of predicted versus observed treatment effect of matched patients
 #' @param plot.CI boolean; TRUE if you want to plot the confidence interval of the calibration plot of predicted versus observed treatment effect of matched patients
 #' @param matched.patients dataframe; optional if you want to provide your own dataframe of matched patients, otherwise patients will be matched (default=NULL)
@@ -95,7 +96,7 @@
 E.for.Benefit <- function(Y, W, X,
                           p.0, p.1, tau.hat,
                           CI=FALSE, nr.bootstraps=50, message=TRUE,
-                          plot=FALSE, plot.CI=FALSE,
+                          span=0.75, plot=FALSE, plot.CI=FALSE,
                           matched.patients=NULL,
                           measure="nearest", distance="mahalanobis",
                           estimand=NULL, replace=FALSE, ...){
@@ -131,7 +132,8 @@ E.for.Benefit <- function(Y, W, X,
   }
 
   # perform smoothing on matched patient pairs
-  loess.calibrate <- stats::loess(matched.tau.obs ~ matched.tau.hat, data=matched.patients)
+  loess.calibrate <- stats::loess(matched.tau.obs ~ matched.tau.hat,
+                                  data=matched.patients, span=span)
   if (plot.CI){
     # compute standard error if plot around LOESS needs to be computed
     loess.result <- predict(loess.calibrate,
@@ -194,7 +196,9 @@ E.for.Benefit <- function(Y, W, X,
       duplicated.matched.patients <- dplyr::slice(matched.patients, dup.subclass.IDs)
 
       # perform smoothing on matched patient pairs
-      loess.calibrate.B <- stats::loess(matched.tau.obs ~ matched.tau.hat, data=duplicated.matched.patients)
+      loess.calibrate.B <- stats::loess(matched.tau.obs ~ matched.tau.hat,
+                                        data=duplicated.matched.patients,
+                                        span=span)
       tau.smoothed.B <- stats::predict(loess.calibrate, newdata=duplicated.matched.patients)
 
       # calculate calibration metrics
