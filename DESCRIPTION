@@ -12,6 +12,7 @@ LazyData: true
 RoxygenNote: 7.1.1
 Imports: 
     dplyr (>= 1.0.7),
+    ggplot2 (>= 3.3.5),
     grDevices (>= 4.1.0),
     Hmisc (>= 4.5.0),
     MatchIt (>= 4.3.2),

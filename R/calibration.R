@@ -12,6 +12,7 @@
 #' @param p.0 a vector of outcome probabilities under control
 #' @param p.1 a vector of outcome probabilities under active treatment
 #' @param tau.hat a vector of individualized treatment effect predictions
+#' @param plot boolean; TRUE computes the calibration plot of predicted versus observed treatment effect of matched patients
 #' @param CI boolean; TRUE compute confidence interval; default=FALSE do not compute confidence interval (default=FALSE)
 #' @param nr.bootstraps boolean; number of bootstraps to use for confidence interval computation (default=1)
 #' @param message boolean; TRUE display computation time message; FALSE do not display message (default=TRUE)
@@ -84,13 +85,13 @@
 #' p.1 <- runif(n)
 #' tau.hat <- runif(n)
 #' EB.out <- E.for.Benefit(Y=Y, W=W, X=X, p.0=p.0, p.1=p.1, tau.hat=tau.hat,
-#'                         CI=TRUE, nr.bootstraps=100, message=TRUE,
+#'                         plot=FALSE, CI=TRUE, nr.bootstraps=100, message=TRUE,
 #'                         matched.patients=NULL,
 #'                         measure="nearest", distance="mahalanobis",
 #'                         estimand=NULL, replace=FALSE)
 #' EB.out
 E.for.Benefit <- function(Y, W, X,
-                          p.0, p.1, tau.hat,
+                          p.0, p.1, tau.hat, plot=FALSE,
                           CI=FALSE, nr.bootstraps=50, message=TRUE,
                           matched.patients=NULL,
                           measure="nearest", distance="mahalanobis",
@@ -134,6 +135,26 @@ E.for.Benefit <- function(Y, W, X,
   Eavg.for.benefit <- mean(abs(tau.smoothed - matched.patients$matched.tau.hat))
   E50.for.benefit <- stats::median(abs(tau.smoothed - matched.patients$matched.tau.hat))
   E90.for.benefit <- as.numeric(stats::quantile(abs(tau.smoothed - matched.patients$matched.tau.hat), probs=0.9))
+
+  if (plot){
+    cat('Calibration plot is created...')
+
+    # omit 2.5% and 97.5% quantiles
+    quantiles <- as.numeric(quantile(tau.smoothed, c(0.025, 0.975)))
+    included.rows <- which(tau.smoothed > quantiles[1] & tau.smoothed < quantiles[2])
+    matched.patients <- matched.patients[included.rows, ]
+
+    # create plot
+    plot <- ggplot2::ggplot(data=matched.patients, ggplot2::aes(x=tau.hat),
+                            show.legend=TRUE)               # set data
+    plot <- plot+ggplot2::theme_light(base_size=22)                  # increase font size
+    plot <- plot+ggplot2::theme(plot.margin=ggplot2::unit(rep(0, 4), "cm"))   # decrease plot margin
+    plot <- plot+ggplot2::geom_line(ggplot2::aes(y=tau.smoothed),             # draw LOESS line
+                           color="blue", size=1)
+    plot <- plot+ggplot2::geom_abline(intercept=0, linetype="dashed")# 45-degree line
+    plot <- plot+ggplot2::labs(x="Predicted treatment effect",
+                      y="Observed treatment effect", color=" ") # axis names
+  }
 
   if (CI){
     if (message){
