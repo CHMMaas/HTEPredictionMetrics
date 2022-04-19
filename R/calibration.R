@@ -88,7 +88,7 @@
 #' tau.hat <- runif(n)
 #' EB.out <- E.for.Benefit(Y=Y, W=W, X=X, p.0=p.0, p.1=p.1, tau.hat=tau.hat,
 #'                         CI=TRUE, nr.bootstraps=100, message=TRUE,
-#'                         plot=TRUE, plot.CI=TRUE,
+#'                         span=0.75, plot=TRUE, plot.CI=TRUE,
 #'                         matched.patients=NULL,
 #'                         measure="nearest", distance="mahalanobis",
 #'                         estimand=NULL, replace=FALSE)
@@ -116,6 +116,7 @@ E.for.Benefit <- function(Y, W, X,
   stopifnot("tau.hat must be numeric" = is.numeric(tau.hat))
   stopifnot("nr.bootstraps must be numeric" = is.numeric(nr.bootstraps))
 
+  stopifnot("W must only consists of zeros and ones" = !sum(sort(unique(W))-c(0, 1)))
   stopifnot("CI must be a boolean (TRUE or FALSE)" = isTRUE(CI)|isFALSE(CI))
   stopifnot("message must be a boolean (TRUE or FALSE)" = isTRUE(message)|isFALSE(message))
 
