@@ -85,7 +85,7 @@
 #' p.1 <- runif(n)
 #' tau.hat <- runif(n)
 #' EB.out <- E.for.Benefit(Y=Y, W=W, X=X, p.0=p.0, p.1=p.1, tau.hat=tau.hat,
-#'                         plot=FALSE, CI=TRUE, nr.bootstraps=100, message=TRUE,
+#'                         plot=TRUE, CI=TRUE, nr.bootstraps=100, message=TRUE,
 #'                         matched.patients=NULL,
 #'                         measure="nearest", distance="mahalanobis",
 #'                         estimand=NULL, replace=FALSE)
@@ -129,31 +129,31 @@ E.for.Benefit <- function(Y, W, X,
 
   # perform smoothing on matched patient pairs
   loess.calibrate <- stats::loess(matched.tau.obs ~ matched.tau.hat, data=matched.patients)
-  tau.smoothed <- predict(loess.calibrate, newdata=matched.patients)
+  matched.patients$tau.smoothed <- predict(loess.calibrate, newdata=matched.patients)
 
   # calculate calibration metrics
-  Eavg.for.benefit <- mean(abs(tau.smoothed - matched.patients$matched.tau.hat))
-  E50.for.benefit <- stats::median(abs(tau.smoothed - matched.patients$matched.tau.hat))
-  E90.for.benefit <- as.numeric(stats::quantile(abs(tau.smoothed - matched.patients$matched.tau.hat), probs=0.9))
+  Eavg.for.benefit <- mean(abs(matched.patients$tau.smoothed - matched.patients$matched.tau.hat))
+  E50.for.benefit <- stats::median(abs(matched.patients$tau.smoothed - matched.patients$matched.tau.hat))
+  E90.for.benefit <- as.numeric(stats::quantile(abs(matched.patients$tau.smoothed - matched.patients$matched.tau.hat), probs=0.9))
 
   if (plot){
-    cat('Calibration plot is created...')
+    cat('Calibration plot is created... \n')
 
     # omit 2.5% and 97.5% quantiles
-    quantiles <- as.numeric(quantile(tau.smoothed, c(0.025, 0.975)))
-    included.rows <- which(tau.smoothed > quantiles[1] & tau.smoothed < quantiles[2])
+    quantiles <- as.numeric(quantile(matched.patients$tau.hat, c(0.025, 0.975)))
+    included.rows <- which(matched.patients$tau.hat > quantiles[1] & matched.patients$tau.hat < quantiles[2])
     matched.patients <- matched.patients[included.rows, ]
 
     # create plot
     plot <- ggplot2::ggplot(data=matched.patients, ggplot2::aes(x=tau.hat),
                             show.legend=TRUE)               # set data
     plot <- plot+ggplot2::theme_light(base_size=22)                  # increase font size
-    plot <- plot+ggplot2::theme(plot.margin=ggplot2::unit(rep(0, 4), "cm"))   # decrease plot margin
     plot <- plot+ggplot2::geom_line(ggplot2::aes(y=tau.smoothed),             # draw LOESS line
                            color="blue", size=1)
     plot <- plot+ggplot2::geom_abline(intercept=0, linetype="dashed")# 45-degree line
     plot <- plot+ggplot2::labs(x="Predicted treatment effect",
                       y="Observed treatment effect", color=" ") # axis names
+    show(plot)
   }
 
   if (CI){

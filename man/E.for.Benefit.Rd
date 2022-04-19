@@ -121,7 +121,7 @@ p.0 <- runif(n)
 p.1 <- runif(n)
 tau.hat <- runif(n)
 EB.out <- E.for.Benefit(Y=Y, W=W, X=X, p.0=p.0, p.1=p.1, tau.hat=tau.hat,
-                        plot=FALSE, CI=TRUE, nr.bootstraps=100, message=TRUE,
+                        plot=TRUE, CI=TRUE, nr.bootstraps=100, message=TRUE,
                         matched.patients=NULL,
                         measure="nearest", distance="mahalanobis",
                         estimand=NULL, replace=FALSE)
