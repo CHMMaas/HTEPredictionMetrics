@@ -14,9 +14,6 @@ E.for.Benefit(
   CI = FALSE,
   nr.bootstraps = 50,
   message = TRUE,
-  span = 0.75,
-  plot = FALSE,
-  plot.CI = FALSE,
   matched.patients = NULL,
   measure = "nearest",
   distance = "mahalanobis",
@@ -43,12 +40,6 @@ E.for.Benefit(
 \item{nr.bootstraps}{boolean; number of bootstraps to use for confidence interval computation (default=1)}
 
 \item{message}{boolean; TRUE display computation time message; FALSE do not display message (default=TRUE)}
-
-\item{span}{the parameter α which controls the degree of smoothing (default=0.75)}
-
-\item{plot}{boolean; TRUE computes the calibration plot of predicted versus observed treatment effect of matched patients}
-
-\item{plot.CI}{boolean; TRUE if you want to plot the confidence interval of the calibration plot of predicted versus observed treatment effect of matched patients}
 
 \item{matched.patients}{dataframe; optional if you want to provide your own dataframe of matched patients, otherwise patients will be matched (default=NULL)}
 
@@ -128,7 +119,6 @@ p.1 <- runif(n)
 tau.hat <- runif(n)
 EB.out <- E.for.Benefit(Y=Y, W=W, X=X, p.0=p.0, p.1=p.1, tau.hat=tau.hat,
                         CI=TRUE, nr.bootstraps=100, message=TRUE,
-                        span=0.75, plot=TRUE, plot.CI=TRUE,
                         matched.patients=NULL,
                         measure="nearest", distance="mahalanobis",
                         estimand=NULL, replace=FALSE)
