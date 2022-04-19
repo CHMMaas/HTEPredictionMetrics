@@ -12,10 +12,11 @@
 #' @param p.0 a vector of outcome probabilities under control
 #' @param p.1 a vector of outcome probabilities under active treatment
 #' @param tau.hat a vector of individualized treatment effect predictions
-#' @param plot boolean; TRUE computes the calibration plot of predicted versus observed treatment effect of matched patients
 #' @param CI boolean; TRUE compute confidence interval; default=FALSE do not compute confidence interval (default=FALSE)
 #' @param nr.bootstraps boolean; number of bootstraps to use for confidence interval computation (default=1)
 #' @param message boolean; TRUE display computation time message; FALSE do not display message (default=TRUE)
+#' @param plot boolean; TRUE computes the calibration plot of predicted versus observed treatment effect of matched patients
+#' @param plot.CI boolean; TRUE if you want to plot the confidence interval of the calibration plot of predicted versus observed treatment effect of matched patients
 #' @param matched.patients dataframe; optional if you want to provide your own dataframe of matched patients, otherwise patients will be matched (default=NULL)
 #' @param measure measure option of matchit function from MatchIt package (default="nearest")
 #' @param distance distance option of matchit function from MatchIt package (default="mahalanobis)
@@ -80,19 +81,21 @@
 #' n <- 100
 #' Y <- sample(0:1, n, replace=TRUE)
 #' W <- sample(0:1, n, replace=TRUE)
-#' X <- matrix(rnorm(n), n, 3)
+#' X <- matrix(rnorm(n), n, 4)
 #' p.0 <- runif(n)
 #' p.1 <- runif(n)
 #' tau.hat <- runif(n)
 #' EB.out <- E.for.Benefit(Y=Y, W=W, X=X, p.0=p.0, p.1=p.1, tau.hat=tau.hat,
-#'                         plot=TRUE, CI=TRUE, nr.bootstraps=100, message=TRUE,
+#'                         CI=TRUE, nr.bootstraps=100, message=TRUE,
+#'                         plot=TRUE, plot.CI=TRUE,
 #'                         matched.patients=NULL,
 #'                         measure="nearest", distance="mahalanobis",
 #'                         estimand=NULL, replace=FALSE)
 #' EB.out
 E.for.Benefit <- function(Y, W, X,
-                          p.0, p.1, tau.hat, plot=FALSE,
+                          p.0, p.1, tau.hat,
                           CI=FALSE, nr.bootstraps=50, message=TRUE,
+                          plot=FALSE, plot.CI=FALSE,
                           matched.patients=NULL,
                           measure="nearest", distance="mahalanobis",
                           estimand=NULL, replace=FALSE, ...){
@@ -128,8 +131,16 @@ E.for.Benefit <- function(Y, W, X,
   }
 
   # perform smoothing on matched patient pairs
-  loess.calibrate <- stats::loess(matched.tau.obs ~ matched.tau.hat, data=matched.patients)
-  matched.patients$tau.smoothed <- predict(loess.calibrate, newdata=matched.patients)
+  loess.calibrate <- stats::loess(matched.tau.obs ~ matched.tau.hat, data=matched.patients, span=1)
+  if (plot.CI){
+    # compute standard error if plot around LOESS needs to be computed
+    loess.result <- predict(loess.calibrate,
+                            newdata=matched.patients,
+                            se=TRUE)
+    matched.patients$tau.smoothed <- loess.result$fit
+  } else {
+    matched.patients$tau.smoothed <- predict(loess.calibrate, newdata=matched.patients)
+  }
 
   # calculate calibration metrics
   Eavg.for.benefit <- mean(abs(matched.patients$tau.smoothed - matched.patients$matched.tau.hat))
@@ -146,14 +157,23 @@ E.for.Benefit <- function(Y, W, X,
 
     # create plot
     plot <- ggplot2::ggplot(data=matched.patients, ggplot2::aes(x=tau.hat),
-                            show.legend=TRUE)               # set data
-    plot <- plot+ggplot2::theme_light(base_size=22)                  # increase font size
-    plot <- plot+ggplot2::geom_line(ggplot2::aes(y=tau.smoothed),             # draw LOESS line
+                            show.legend=TRUE)                     # set data
+    plot <- plot+ggplot2::theme_light(base_size=22)               # increase font size
+    plot <- plot+ggplot2::geom_line(ggplot2::aes(y=matched.patients$tau.smoothed), # plot LOESS line
                            color="blue", size=1)
     plot <- plot+ggplot2::geom_abline(intercept=0, linetype="dashed")# 45-degree line
     plot <- plot+ggplot2::labs(x="Predicted treatment effect",
-                      y="Observed treatment effect", color=" ") # axis names
-    show(plot)
+                      y="Observed treatment effect", color=" ")   # axis names
+
+    # plot confidence interval
+    if (plot.CI){
+      y.min <- matched.patients$tau.smoothed-stats::qt(0.975, loess.result$df)*loess.result$se.fit[included.rows]
+      y.max <- matched.patients$tau.smoothed+stats::qt(0.975, loess.result$df)*loess.result$se.fit[included.rows]
+      plot <- plot+ggplot2::geom_ribbon(ggplot2::aes(ymin=y.min, ymax=y.max), alpha=0.2)
+    }
+
+    # show plot
+    methods::show(plot)
   }
 
   if (CI){

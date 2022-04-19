@@ -11,10 +11,11 @@ E.for.Benefit(
   p.0,
   p.1,
   tau.hat,
-  plot = FALSE,
   CI = FALSE,
   nr.bootstraps = 50,
   message = TRUE,
+  plot = FALSE,
+  plot.CI = FALSE,
   matched.patients = NULL,
   measure = "nearest",
   distance = "mahalanobis",
@@ -36,13 +37,15 @@ E.for.Benefit(
 
 \item{tau.hat}{a vector of individualized treatment effect predictions}
 
-\item{plot}{boolean; TRUE computes the calibration plot of predicted versus observed treatment effect of matched patients}
-
 \item{CI}{boolean; TRUE compute confidence interval; default=FALSE do not compute confidence interval (default=FALSE)}
 
 \item{nr.bootstraps}{boolean; number of bootstraps to use for confidence interval computation (default=1)}
 
 \item{message}{boolean; TRUE display computation time message; FALSE do not display message (default=TRUE)}
+
+\item{plot}{boolean; TRUE computes the calibration plot of predicted versus observed treatment effect of matched patients}
+
+\item{plot.CI}{boolean; TRUE if you want to plot the confidence interval of the calibration plot of predicted versus observed treatment effect of matched patients}
 
 \item{matched.patients}{dataframe; optional if you want to provide your own dataframe of matched patients, otherwise patients will be matched (default=NULL)}
 
@@ -116,12 +119,13 @@ library(HTEPredictionMetrics)
 n <- 100
 Y <- sample(0:1, n, replace=TRUE)
 W <- sample(0:1, n, replace=TRUE)
-X <- matrix(rnorm(n), n, 3)
+X <- matrix(rnorm(n), n, 4)
 p.0 <- runif(n)
 p.1 <- runif(n)
 tau.hat <- runif(n)
 EB.out <- E.for.Benefit(Y=Y, W=W, X=X, p.0=p.0, p.1=p.1, tau.hat=tau.hat,
-                        plot=TRUE, CI=TRUE, nr.bootstraps=100, message=TRUE,
+                        CI=TRUE, nr.bootstraps=100, message=TRUE,
+                        plot=TRUE, plot.CI=TRUE,
                         matched.patients=NULL,
                         measure="nearest", distance="mahalanobis",
                         estimand=NULL, replace=FALSE)

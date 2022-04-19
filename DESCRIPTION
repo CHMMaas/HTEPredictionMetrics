@@ -16,6 +16,7 @@ Imports:
     grDevices (>= 4.1.0),
     Hmisc (>= 4.5.0),
     MatchIt (>= 4.3.2),
+    methods (>= 4.1.0),
     rms (>= 6.2.0),
     stats (>= 4.1.0),
     survival (>= 3.2.11),
