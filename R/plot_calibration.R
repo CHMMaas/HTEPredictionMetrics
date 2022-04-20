@@ -5,6 +5,16 @@
 #' @importFrom stats quantile
 #' @importFrom stats loess
 #' @importFrom stats predict
+#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 aes
+#' @importFrom ggplot2 theme_light
+#' @importFrom ggplot2 geom_line
+#' @importFrom ggplot2 geom_abline
+#' @importFrom ggplot2 labs
+#' @importFrom ggplot2 ylim
+#' @importFrom ggplot2 xlim
+#' @importFrom ggplot2 geom_ribbon
+#' @importFrom ggplot2 .data
 #'
 #' @param matched.patients dataframe; dataframe of matched patients, which contains a vector of predicted treatment effect (tau.hat), predicted treatment effect of matched patients (matched.tau.hat), and observed treatment effect (matched.tau.obs) of matched patients
 #' @param limits list; indicating the x-axis and y-axis limits, e.g. list(ymin=-1, ymax=1, xmin=-1, xmax=1)
@@ -64,10 +74,10 @@ calibration.plot <- function(matched.patients=NULL,
   matched.patients <- matched.patients[included.rows, ]
 
   # create plot
-  build.plot <- ggplot2::ggplot(data=matched.patients, ggplot2::aes(x=matched.patients$matched.tau.hat),
+  build.plot <- ggplot2::ggplot(data=matched.patients, ggplot2::aes(x= .data$matched.tau.hat),
                           show.legend=TRUE)                     # set data
   build.plot <- build.plot+ggplot2::theme_light(base_size=22)               # increase font size
-  build.plot <- build.plot+ggplot2::geom_line(ggplot2::aes(y=matched.patients$tau.smoothed), # plot LOESS line
+  build.plot <- build.plot+ggplot2::geom_line(ggplot2::aes(y= .data$tau.smoothed), # plot LOESS line
                                   color="blue", size=1)
   build.plot <- build.plot+ggplot2::geom_abline(intercept=0, linetype="dashed")# 45-degree line
   build.plot <- build.plot+ggplot2::labs(x="Predicted treatment effect",
