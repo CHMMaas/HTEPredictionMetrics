@@ -37,18 +37,21 @@ calibration.plot <- function(matched.patients=NULL, plot.CI=FALSE, ...){
   stopifnot("matched.patients must be a dataframe" = is.data.frame(matched.patients))
   stopifnot("CI must be a boolean (TRUE or FALSE)" = isTRUE(plot.CI)|isFALSE(plot.CI))
 
-  # perform smoothing on matched patient pairs
-  loess.calibrate <- stats::loess(matched.tau.obs ~ matched.tau.hat,
-                                  data=matched.patients, ...)
+  # compute the smoothed calibration curve if it is not in the matched.patient dataframe
+  if (is.null(matched.patients$tau.smoothed) | plot.CI){
+    # perform smoothing on matched patient pairs
+    loess.calibrate <- stats::loess(matched.tau.obs ~ matched.tau.hat,
+                                    data=matched.patients, ...)
 
-  if (plot.CI){
-    # compute standard error if plot around LOESS needs to be computed
-    loess.result <- predict(loess.calibrate,
-                            newdata=matched.patients,
-                            se=TRUE)
-    matched.patients$tau.smoothed <- loess.result$fit
-  } else {
-    matched.patients$tau.smoothed <- predict(loess.calibrate, newdata=matched.patients)
+    if (plot.CI){
+      # compute standard error if plot around LOESS needs to be computed
+      loess.result <- predict(loess.calibrate,
+                              newdata=matched.patients,
+                              se=TRUE)
+      matched.patients$tau.smoothed <- loess.result$fit
+    } else {
+      matched.patients$tau.smoothed <- predict(loess.calibrate, newdata=matched.patients)
+    }
   }
 
   # omit 2.5% and 97.5% quantiles
@@ -57,7 +60,7 @@ calibration.plot <- function(matched.patients=NULL, plot.CI=FALSE, ...){
   matched.patients <- matched.patients[included.rows, ]
 
   # create plot
-  build.plot <- ggplot2::ggplot(data=matched.patients, ggplot2::aes(x=matched.patients$tau.hat),
+  build.plot <- ggplot2::ggplot(data=matched.patients, ggplot2::aes(x=matched.patients$matched.tau.hat),
                           show.legend=TRUE)                     # set data
   build.plot <- build.plot+ggplot2::theme_light(base_size=22)               # increase font size
   build.plot <- build.plot+ggplot2::geom_line(ggplot2::aes(y=matched.patients$tau.smoothed), # plot LOESS line
