@@ -12,10 +12,10 @@
 #' @param p.0 a vector of outcome probabilities under control
 #' @param p.1 a vector of outcome probabilities under active treatment
 #' @param tau.hat a vector of individualized treatment effect predictions
+#' @param matched.patients dataframe; optional if you want to provide your own dataframe (including matched.tau.hat, matched.tau.obs, and also include subclass if confidence interval needs to be computed) of matched patients, otherwise patients will be matched (default=NULL)
 #' @param CI boolean; TRUE compute confidence interval; default=FALSE do not compute confidence interval (default=FALSE)
 #' @param nr.bootstraps boolean; number of bootstraps to use for confidence interval computation (default=1)
 #' @param message boolean; TRUE display computation time message; FALSE do not display message (default=TRUE)
-#' @param matched.patients dataframe; optional if you want to provide your own dataframe of matched patients, otherwise patients will be matched (default=NULL)
 #' @param measure measure option of matchit function from MatchIt package (default="nearest")
 #' @param distance distance option of matchit function from MatchIt package (default="mahalanobis)
 #' @param estimand default ATC meaning treated units are selected to be matched with control units
@@ -89,38 +89,49 @@
 #'                         measure="nearest", distance="mahalanobis",
 #'                         estimand=NULL, replace=FALSE)
 #' EB.out
-E.for.Benefit <- function(Y, W, X,
-                          p.0, p.1, tau.hat,
-                          CI=FALSE, nr.bootstraps=50, message=TRUE,
+#'
+#' # alternatively, use a dataframe of matched patients and calculate the C-for-Benefit
+#' out.matched <- match.patients(Y=Y, W=W, X=X,
+#'                               p.0=p.0, p.1=p.1, tau.hat=tau.hat,
+#'                               CI=FALSE, nr.bootstraps=50, message=TRUE,
+#'                               measure="nearest", distance="mahalanobis",
+#'                               estimand=NULL, replace=FALSE)
+#' EB.out <- E.for.Benefit(matched.patients=out.matched$df.matched.patients,
+#'                         CI=TRUE, nr.bootstraps=100, message=TRUE, replace=FALSE)
+#' EB.out
+E.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
+                          p.0=NULL, p.1=NULL, tau.hat=NULL,
                           matched.patients=NULL,
+                          CI=FALSE, nr.bootstraps=50, message=TRUE,
                           measure="nearest", distance="mahalanobis",
                           estimand=NULL, replace=FALSE, ...){
-  # ensure correct data types
-  stopifnot("W must be a vector" = is.vector(W))
-  stopifnot("X must be a vector or matrix" = is.matrix(X) | is.vector(X))
-  stopifnot("p.0 must be a vector" = is.vector(p.0))
-  stopifnot("p.1 must be a vector" = is.vector(p.1))
-  stopifnot("tau.hat must be a vector" = is.vector(tau.hat))
+  # check user input
   stopifnot("nr.bootstraps must be a scalar" = length(nr.bootstraps)==1)
-
-  stopifnot("Y must be numeric" = is.numeric(Y))
-  stopifnot("W must be numeric" = is.numeric(W))
-  stopifnot("X must be numeric" = is.numeric(X))
-  stopifnot("p.0 must be numeric" = is.numeric(p.0))
-  stopifnot("p.1 must be numeric" = is.numeric(p.1))
-  stopifnot("tau.hat must be numeric" = is.numeric(tau.hat))
   stopifnot("nr.bootstraps must be numeric" = is.numeric(nr.bootstraps))
-
   stopifnot("W must only consists of zeros and ones" = !sum(sort(unique(W))-c(0, 1)))
   stopifnot("CI must be a boolean (TRUE or FALSE)" = isTRUE(CI)|isFALSE(CI))
   stopifnot("message must be a boolean (TRUE or FALSE)" = isTRUE(message)|isFALSE(message))
 
   if (is.null(matched.patients)){
+    # check user input
+    stopifnot("W must be a vector" = is.vector(W))
+    stopifnot("X must be a vector or matrix" = is.matrix(X) | is.vector(X))
+    stopifnot("p.0 must be a vector" = is.vector(p.0))
+    stopifnot("p.1 must be a vector" = is.vector(p.1))
+    stopifnot("tau.hat must be a vector" = is.vector(tau.hat))
+
+    stopifnot("Y must be numeric" = is.numeric(Y))
+    stopifnot("W must be numeric" = is.numeric(W))
+    stopifnot("X must be numeric" = is.numeric(X))
+    stopifnot("p.0 must be numeric" = is.numeric(p.0))
+    stopifnot("p.1 must be numeric" = is.numeric(p.1))
+    stopifnot("tau.hat must be numeric" = is.numeric(tau.hat))
+
     # compute matched pairs
-    matched.patients <- match.patients(Y, W, X,
-                                       p.0, p.1, tau.hat,
-                                       measure="nearest", distance="mahalanobis",
-                                       estimand=NULL, replace=FALSE, ...)$matched.patients
+    matched.patients <- match.patients(Y=Y, W=W, X=X,
+                                       p.0=p.0, p.1=p.1, tau.hat=tau.hat,
+                                       measure=measure, distance=distance,
+                                       estimand=estimand, replace=replace, ...)$df.matched.patients
   }
   else{
     # use the dataframe provided by the user
@@ -130,6 +141,7 @@ E.for.Benefit <- function(Y, W, X,
   # perform smoothing on matched patient pairs
   loess.calibrate <- stats::loess(matched.tau.obs ~ matched.tau.hat,
                                   data=matched.patients)
+  matched.patients$tau.smoothed <- predict(loess.calibrate)
 
   # calculate calibration metrics
   Eavg.for.benefit <- mean(abs(matched.patients$tau.smoothed - matched.patients$matched.tau.hat))

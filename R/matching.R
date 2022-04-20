@@ -25,7 +25,7 @@
 #'
 #' @return The output of the match.patients function is
 #'
-#' matched.patients
+#' df.matched.patients
 #'
 #' a dataframe containing the matched pairs
 #'
@@ -45,8 +45,8 @@
 #' p.0 <- runif(n)
 #' p.1 <- runif(n)
 #' tau.hat <- runif(n)
-#' matched.patients <- match.patients(Y, W, X,
-#'                                    p.0, p.1, tau.hat,
+#' matched.patients <- match.patients(Y=Y, W=W, X=X,
+#'                                    p.0=p.0, p.1=p.1, tau.hat=tau.hat,
 #'                                    CI=FALSE, nr.bootstraps=50, message=TRUE,
 #'                                    measure="nearest", distance="mahalanobis",
 #'                                    estimand=NULL, replace=FALSE)
@@ -87,7 +87,7 @@ match.patients <- function(Y, W, X,
   }
   matched <- MatchIt::matchit(W ~ X, data=data.df,
                               method=measure, distance=distance,
-                              estimand=estimand, replace=replace, ...) # TODO: add to documentations that the ... are for matchit
+                              estimand=estimand, replace=replace, ...)
   matched.patients <- MatchIt::match.data(matched)
   matched.patients$subclass <- as.numeric(matched.patients$subclass)
 
@@ -112,5 +112,5 @@ match.patients <- function(Y, W, X,
   # matched treatment effect
   matched.patients$matched.tau.hat <- matched.patients$matched.p.0 - matched.patients$matched.p.1
 
-  return(list(matched.patients=matched.patients, discarded=discarded))
+  return(list(df.matched.patients=matched.patients, discarded=discarded))
 }

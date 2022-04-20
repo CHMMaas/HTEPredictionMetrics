@@ -5,16 +5,16 @@
 \title{Overall performance metrics for benefit}
 \usage{
 OP.for.Benefit(
-  Y,
-  W,
-  X,
-  p.0,
-  p.1,
-  tau.hat,
+  Y = NULL,
+  W = NULL,
+  X = NULL,
+  p.0 = NULL,
+  p.1 = NULL,
+  tau.hat = NULL,
+  matched.patients = NULL,
   CI = FALSE,
   nr.bootstraps = 50,
   message = TRUE,
-  matched.patients = NULL,
   measure = "nearest",
   distance = "mahalanobis",
   estimand = NULL,
@@ -35,13 +35,13 @@ OP.for.Benefit(
 
 \item{tau.hat}{a vector of individualized treatment effect predictions}
 
+\item{matched.patients}{dataframe; optional if you want to provide your own dataframe (including p.0, p.1, matched.tau.hat, matched.tau.obs, and also include subclass if confidence interval needs to be computed) of matched patients, otherwise patients will be matched (default=NULL)}
+
 \item{CI}{boolean; TRUE compute confidence interval; default=FALSE do not compute confidence interval (default=FALSE)}
 
 \item{nr.bootstraps}{boolean; number of bootstraps to use for confidence interval computation (default=1)}
 
 \item{message}{boolean; TRUE display computation time message; FALSE do not display message (default=TRUE)}
-
-\item{matched.patients}{dataframe; optional if you want to provide your own dataframe of matched patients, otherwise patients will be matched (default=NULL)}
 
 \item{measure}{measure option of matchit function from MatchIt package (default="nearest")}
 
@@ -107,5 +107,15 @@ OP.out <- OP.for.Benefit(Y=Y, W=W, X=X, p.0=p.0, p.1=p.1, tau.hat=tau.hat,
                         matched.patients=NULL,
                         measure="nearest", distance="mahalanobis",
                         estimand=NULL, replace=FALSE)
+OP.out
+
+# alternatively, use a dataframe of matched patients and calculate the overall performance metrics
+out.matched <- match.patients(Y=Y, W=W, X=X,
+                              p.0=p.0, p.1=p.1, tau.hat=tau.hat,
+                              CI=FALSE, nr.bootstraps=50, message=TRUE,
+                              measure="nearest", distance="mahalanobis",
+                              estimand=NULL, replace=FALSE)
+OP.out <- OP.for.Benefit(matched.patients=out.matched$df.matched.patients,
+                        CI=TRUE, nr.bootstraps=100, message=TRUE, replace=FALSE)
 OP.out
 }

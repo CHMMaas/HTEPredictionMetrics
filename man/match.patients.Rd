@@ -44,7 +44,7 @@ match.patients(
 \value{
 The output of the match.patients function is
 
-matched.patients
+df.matched.patients
 
 a dataframe containing the matched pairs
 
@@ -71,8 +71,8 @@ X <- matrix(rnorm(n), n, 3)
 p.0 <- runif(n)
 p.1 <- runif(n)
 tau.hat <- runif(n)
-matched.patients <- match.patients(Y, W, X,
-                                   p.0, p.1, tau.hat,
+matched.patients <- match.patients(Y=Y, W=W, X=X,
+                                   p.0=p.0, p.1=p.1, tau.hat=tau.hat,
                                    CI=FALSE, nr.bootstraps=50, message=TRUE,
                                    measure="nearest", distance="mahalanobis",
                                    estimand=NULL, replace=FALSE)
