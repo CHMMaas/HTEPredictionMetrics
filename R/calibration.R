@@ -120,7 +120,7 @@ E.for.Benefit <- function(Y, W, X,
     matched.patients <- match.patients(Y, W, X,
                                        p.0, p.1, tau.hat,
                                        measure="nearest", distance="mahalanobis",
-                                       estimand=NULL, replace=FALSE, ...)
+                                       estimand=NULL, replace=FALSE, ...)$matched.patients
   }
   else{
     # use the dataframe provided by the user

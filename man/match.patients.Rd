@@ -42,7 +42,16 @@ match.patients(
 \item{...}{additional arguments for matchit function from MatchIt package}
 }
 \value{
-The output of the match.patients function is a dataframe named 'matched.patients' containing the matched pairs.
+The output of the match.patients function is
+
+matched.patients
+
+a dataframe containing the matched pairs
+
+
+discarded
+
+a vector of ID's of the patients omitted that are not matched
 }
 \description{
 This function matches patient pairs using the MatchIt package.

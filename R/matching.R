@@ -9,6 +9,7 @@
 #'
 #' @importFrom MatchIt matchit
 #' @importFrom stats aggregate
+#' @importFrom dplyr setdiff
 #'
 #' @param Y a vector of outcomes
 #' @param W a vector of treatment assignment; 1 for active treatment; 0 for control
@@ -22,7 +23,16 @@
 #' @param replace boolean; TRUE if matching with replacement, FALSE if matching without replacement
 #' @param ... additional arguments for matchit function from MatchIt package
 #'
-#' @return The output of the match.patients function is a dataframe named 'matched.patients' containing the matched pairs.
+#' @return The output of the match.patients function is
+#'
+#' matched.patients
+#'
+#' a dataframe containing the matched pairs
+#'
+#'
+#' discarded
+#'
+#' a vector of ID's of the patients omitted that are not matched
 #'
 #' @export
 #'
@@ -81,6 +91,9 @@ match.patients <- function(Y, W, X,
   matched.patients <- MatchIt::match.data(matched)
   matched.patients$subclass <- as.numeric(matched.patients$subclass)
 
+  # patient IDs of those who weren't matched
+  discarded <- dplyr::setdiff(data.df$match.id, MatchIt::get_matches(matched, data=data.df)$id)
+
   # sort on subclass and W
   matched.patients <- matched.patients[with(matched.patients, order(subclass, 1-W)), ]
 
@@ -99,5 +112,5 @@ match.patients <- function(Y, W, X,
   # matched treatment effect
   matched.patients$matched.tau.hat <- matched.patients$matched.p.0 - matched.patients$matched.p.1
 
-  return(matched.patients=matched.patients)
+  return(list(matched.patients=matched.patients, discarded=discarded))
 }
