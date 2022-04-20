@@ -7,6 +7,7 @@
 #' @importFrom stats predict
 #'
 #' @param matched.patients dataframe; dataframe of matched patients, which contains a vector of predicted treatment effect (tau.hat), predicted treatment effect of matched patients (matched.tau.hat), and observed treatment effect (matched.tau.obs) of matched patients
+#' @param limits list; indicating the x-axis and y-axis limits, e.g. list(ymin=-1, ymax=1, xmin=-1, xmax=1)
 #' @param plot.CI boolean; TRUE if you want to plot the confidence interval of the calibration plot of predicted versus observed treatment effect of matched patients
 #' @param ... additional arguments for loess function from loess package
 #'
@@ -31,8 +32,11 @@
 #'                         matched.patients=NULL,
 #'                         measure="nearest", distance="mahalanobis",
 #'                         estimand=NULL, replace=FALSE)
-#' calibration.plot(matched.patients=EB.out$matched.patients, plot.CI=TRUE)
-calibration.plot <- function(matched.patients=NULL, plot.CI=FALSE, ...){
+#' limits <- list(ymin=-1, ymax=1, xmin=-1, xmax=1)
+#' calibration.plot(matched.patients=EB.out$matched.patients, limits=limits, plot.CI=TRUE)
+calibration.plot <- function(matched.patients=NULL,
+                             limits=list(ymin=-1, ymax=1, xmin=-1, xmax=1),
+                             plot.CI=FALSE, ...){
   # ensure correct data types
   stopifnot("matched.patients must be a dataframe" = is.data.frame(matched.patients))
   stopifnot("CI must be a boolean (TRUE or FALSE)" = isTRUE(plot.CI)|isFALSE(plot.CI))
@@ -68,6 +72,10 @@ calibration.plot <- function(matched.patients=NULL, plot.CI=FALSE, ...){
   build.plot <- build.plot+ggplot2::geom_abline(intercept=0, linetype="dashed")# 45-degree line
   build.plot <- build.plot+ggplot2::labs(x="Predicted treatment effect",
                              y="Observed treatment effect", color=" ")   # axis names
+
+  # edit limits
+  build.plot <- build.plot+ggplot2::ylim(limits$ymin, limits$ymax)
+  build.plot <- build.plot+ggplot2::xlim(limits$xmin, limits$xmax)
 
   # plot confidence interval
   if (plot.CI){
