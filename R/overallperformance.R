@@ -141,10 +141,10 @@ OP.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
   omit <- which(t.1<0 | t.0<0 | t.min1<0)
   if (length(omit)>0 & message){
     cat('nr. omitted observations for log loss:', length(omit), '\n')
-    Log.Loss.for.Benefit <- -(sum(I.1[-omit]*log(t.1[-omit]))+sum(I.0[-omit]*log(t.0[-omit]))+sum(I.min1[-omit]*log(t.min1[-omit])))/length(matched.patients$matched.tau.obs)
+    Log.Loss.for.Benefit <- -(sum(I.1[-omit]*log(t.1[-omit]))+sum(I.0[-omit]*log(t.0[-omit]))+sum(I.min1[-omit]*log(t.min1[-omit]))) # /length(matched.patients$matched.tau.obs)
   }
   else{
-    Log.Loss.for.Benefit <- -(sum(I.1*log(t.1))+sum(I.0*log(t.0))+sum(I.min1*log(t.min1)))/length(matched.patients$matched.tau.obs)
+    Log.Loss.for.Benefit <- -(sum(I.1*log(t.1))+sum(I.0*log(t.0))+sum(I.min1*log(t.min1))) # /length(matched.patients$matched.tau.obs)
   }
 
   if (CI){
