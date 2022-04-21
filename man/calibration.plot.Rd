@@ -26,12 +26,28 @@ The output of the E.for.benefit function is a "list" with the following componen
 matched.patients
 
 a dataframe containing the matched patients.
+
+
+build.plot
+
+ggplo2 object of the plot.
+
+
+quantiles
+
+of treatment effect.
+
+
+se.quantiles
+
+standard error of quantiles of treatment effect.
 }
 \description{
 This function calculates E-for-benefit statistics.
 }
 \examples{
 library(HTEPredictionMetrics)
+set.seed(1)
 n <- 100
 Y <- sample(0:1, n, replace=TRUE)
 W <- sample(0:1, n, replace=TRUE)

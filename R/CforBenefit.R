@@ -95,6 +95,7 @@ C.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
 
     stopifnot("Y must be numeric" = is.numeric(Y))
     stopifnot("W must be numeric" = is.numeric(W))
+    stopifnot("W must only contain 0 and 1 values" = sum(sort(unique(W))-c(0, 1))==0)
     stopifnot("X must be numeric" = is.numeric(X))
     stopifnot("p.0 must be numeric" = is.numeric(p.0))
     stopifnot("p.1 must be numeric" = is.numeric(p.1))

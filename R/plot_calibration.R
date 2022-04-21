@@ -10,10 +10,12 @@
 #' @importFrom ggplot2 theme_light
 #' @importFrom ggplot2 geom_line
 #' @importFrom ggplot2 geom_abline
+#' @importFrom ggplot2 geom_ribbon
+#' @importFrom ggplot2 geom_point
+#' @importFrom ggplot2 geom_segment
 #' @importFrom ggplot2 labs
 #' @importFrom ggplot2 ylim
 #' @importFrom ggplot2 xlim
-#' @importFrom ggplot2 geom_ribbon
 #' @importFrom ggplot2 .data
 #'
 #' @param matched.patients dataframe; dataframe of matched patients, which contains a vector of predicted treatment effect (tau.hat), predicted treatment effect of matched patients (matched.tau.hat), and observed treatment effect (matched.tau.obs) of matched patients
@@ -26,10 +28,26 @@
 #' matched.patients
 #'
 #' a dataframe containing the matched patients.
+#'
+#'
+#' build.plot
+#'
+#' ggplo2 object of the plot.
+#'
+#'
+#' quantiles
+#'
+#' of treatment effect.
+#'
+#'
+#' se.quantiles
+#'
+#' standard error of quantiles of treatment effect.
 #' @export
 #'
 #' @examples
 #' library(HTEPredictionMetrics)
+#' set.seed(1)
 #' n <- 100
 #' Y <- sample(0:1, n, replace=TRUE)
 #' W <- sample(0:1, n, replace=TRUE)
@@ -94,8 +112,43 @@ calibration.plot <- function(matched.patients=NULL,
     build.plot <- build.plot+ggplot2::geom_ribbon(ggplot2::aes(ymin=y.min, ymax=y.max), alpha=0.2)
   }
 
+  # plot quantiles
+  quantiles <- c(min(matched.patients$matched.tau.hat)-0.01,
+                 as.numeric(quantile(matched.patients$matched.tau.hat, c(0.25, 0.5, 0.75))),
+                 max(matched.patients$matched.tau.hat))
+  ordered.df <- matched.patients[order(matched.patients$matched.tau.hat), ]
+  ordered.df$quantile.nr <- cut(ordered.df$matched.tau.hat, breaks=quantiles, labels=FALSE)
+
+  # x-axis value is mean of matched treatment effect in the quantiles
+  x.of.quant <- aggregate(ordered.df, list(ordered.df$quantile.nr), mean)$matched.tau.hat
+
+  # y-axis value is mean of matched treatment effect in the quantiles
+  y.of.quant <- aggregate(ordered.df, list(ordered.df$quantile.nr), mean)$matched.tau.obs
+
+  # determine standard deviation in group
+  sd <- aggregate(ordered.df, list(ordered.df$quantile.nr), sd)$matched.tau.obs
+
+  # determine confidence interval
+  n <- rep(NA, 4)
+  for (q.nr in 1:4){
+    n[q.nr] <- nrow(ordered.df[ordered.df$quantile.nr==q.nr,])
+  }
+  sd <- sqrt(sd^2/n)
+  y.lower <- y.of.quant-1.96*sd
+  y.upper <- y.of.quant+1.96*sd
+
+  # add quantiles to plot
+  build.plot <- build.plot+ggplot2::geom_segment(ggplot2::aes(x = x.of.quant[1], y = y.lower[1], xend = x.of.quant[1], yend = y.upper[1]), size=1)
+  build.plot <- build.plot+ggplot2::geom_point(ggplot2::aes(x=x.of.quant[1], y=y.of.quant[1]), size=3)
+  build.plot <- build.plot+ggplot2::geom_segment(ggplot2::aes(x = x.of.quant[2], y = y.lower[2], xend = x.of.quant[2], yend = y.upper[2]), size=1)
+  build.plot <- build.plot+ggplot2::geom_point(ggplot2::aes(x=x.of.quant[2], y=y.of.quant[2]), size=3)
+  build.plot <- build.plot+ggplot2::geom_segment(ggplot2::aes(x = x.of.quant[3], y = y.lower[3], xend = x.of.quant[3], yend = y.upper[3]), size=1)
+  build.plot <- build.plot+ggplot2::geom_point(ggplot2::aes(x=x.of.quant[3], y=y.of.quant[3]), size=3)
+  build.plot <- build.plot+ggplot2::geom_segment(ggplot2::aes(x = x.of.quant[4], y = y.lower[4], xend = x.of.quant[4], yend = y.upper[4]), size=1)
+  build.plot <- build.plot+ggplot2::geom_point(ggplot2::aes(x=x.of.quant[4], y=y.of.quant[4]), size=3)
+
   # show plot
   methods::show(build.plot)
 
-  return(list(matched.patients=matched.patients, build.plot=build.plot))
+  return(list(matched.patients=matched.patients, build.plot=build.plot, quantiles=x.of.quant, se.quantiles=y.of.quant))
 }
