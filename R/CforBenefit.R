@@ -4,13 +4,14 @@
 #' models predicting individualized treatment effect. The C-for-benefit
 #' corresponds to the probability that from two randomly chosen matched patient
 #' pairs with unequal observed treatment effect, the pair with greater observed
-#' treatment effect also has a higher predicted treatment effect.
+#' treatment effect also has a higher predicted treatment effect. Please note,
+#' this function is only applicable for binary outcomes.
 #'
 #' @importFrom Hmisc rcorr.cens
 #' @importFrom dplyr slice
 #' @importFrom stats quantile
 #'
-#' @param Y a vector of outcomes
+#' @param Y a vector of binary outcomes; 1 if an event; 0 if not
 #' @param W a vector of treatment assignment; 1 for active treatment; 0 for control (or alternative treatment), note: make sure that W consists only of values of 0 and 1
 #' @param X a matrix of patient characteristics or individualized treatment effect predictions
 #' @param p.0 a vector of outcome probabilities under control (or alternative treatment)

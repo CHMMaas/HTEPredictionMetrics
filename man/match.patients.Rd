@@ -19,7 +19,7 @@ match.patients(
 )
 }
 \arguments{
-\item{Y}{a vector of outcomes}
+\item{Y}{a vector of binary outcomes; 1 if an event; 0 if not}
 
 \item{W}{a vector of treatment assignment; 1 for active treatment; 0 for control}
 
@@ -60,7 +60,7 @@ pairs of patients matched on patient characteristics (or on individualized
 treatment effect predictions). Predicted treatment effect of a matched pair
 was defined as the difference between the predicted outcome probability of
 the untreated patient minus the predicted outcome probability of the treated
-patient.
+patient.  Please note, this function is only applicable for binary outcomes.
 }
 \examples{
 library(HTEPredictionMetrics)

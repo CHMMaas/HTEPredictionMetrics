@@ -23,7 +23,7 @@ OP.for.Benefit(
 )
 }
 \arguments{
-\item{Y}{a vector of outcomes}
+\item{Y}{a vector of binary outcomes; 1 if an event; 0 if not}
 
 \item{W}{a vector of treatment assignment; 1 for active treatment; 0 for control}
 
@@ -91,7 +91,9 @@ Brier.upper.CI
 the upper bound of the confidence interval of the Brier-for-Benefit (if CI = TRUE).
 }
 \description{
-This function calculates logistic-loss-for-benefit and Brier-for-benefit.
+This function calculates logistic-loss-for-benefit and
+Brier-for-benefit.  Please note, this function is only applicable for binary
+outcomes.
 }
 \examples{
 library(HTEPredictionMetrics)

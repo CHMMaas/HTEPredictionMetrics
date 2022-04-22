@@ -43,7 +43,8 @@ se.quantiles
 standard error of quantiles of treatment effect.
 }
 \description{
-This function calculates E-for-benefit statistics.
+This function calculates E-for-benefit statistics.  Please note,
+this function is only applicable for binary outcomes.
 }
 \examples{
 library(HTEPredictionMetrics)

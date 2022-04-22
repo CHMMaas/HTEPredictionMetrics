@@ -23,7 +23,7 @@ C.for.Benefit(
 )
 }
 \arguments{
-\item{Y}{a vector of outcomes}
+\item{Y}{a vector of binary outcomes; 1 if an event; 0 if not}
 
 \item{W}{a vector of treatment assignment; 1 for active treatment; 0 for control (or alternative treatment), note: make sure that W consists only of values of 0 and 1}
 
@@ -81,7 +81,8 @@ D. van Klaveren et al. (2018), which measures the discriminative ability of
 models predicting individualized treatment effect. The C-for-benefit
 corresponds to the probability that from two randomly chosen matched patient
 pairs with unequal observed treatment effect, the pair with greater observed
-treatment effect also has a higher predicted treatment effect.
+treatment effect also has a higher predicted treatment effect. Please note,
+this function is only applicable for binary outcomes.
 }
 \examples{
 library(HTEPredictionMetrics)

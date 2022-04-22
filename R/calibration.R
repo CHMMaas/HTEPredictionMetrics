@@ -1,12 +1,13 @@
 #' @title E-for-benefit
-#' @description This function calculates E-for-benefit statistics.
+#' @description This function calculates E-for-benefit statistics. Please note,
+#' this function is only applicable for binary outcomes.
 #'
 #' @importFrom dplyr slice
 #' @importFrom stats quantile
 #' @importFrom stats loess
 #' @importFrom stats predict
 #'
-#' @param Y a vector of outcomes
+#' @param Y a vector of binary outcomes; 1 if an event; 0 if not
 #' @param W a vector of treatment assignment; 1 for active treatment; 0 for control
 #' @param X a matrix of patient characteristics or individualized treatment effect predictions
 #' @param p.0 a vector of outcome probabilities under control

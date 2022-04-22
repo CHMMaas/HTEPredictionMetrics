@@ -23,7 +23,7 @@ E.for.Benefit(
 )
 }
 \arguments{
-\item{Y}{a vector of outcomes}
+\item{Y}{a vector of binary outcomes; 1 if an event; 0 if not}
 
 \item{W}{a vector of treatment assignment; 1 for active treatment; 0 for control}
 
@@ -106,7 +106,8 @@ E90.upper.CI
 the upper bound of the confidence interval of the E90-for-Benefit (if CI = TRUE).
 }
 \description{
-This function calculates E-for-benefit statistics.
+This function calculates E-for-benefit statistics. Please note,
+this function is only applicable for binary outcomes.
 }
 \examples{
 library(HTEPredictionMetrics)

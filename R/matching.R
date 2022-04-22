@@ -5,13 +5,13 @@
 #' treatment effect predictions). Predicted treatment effect of a matched pair
 #' was defined as the difference between the predicted outcome probability of
 #' the untreated patient minus the predicted outcome probability of the treated
-#' patient.
+#' patient.  Please note, this function is only applicable for binary outcomes.
 #'
 #' @importFrom MatchIt matchit
 #' @importFrom stats aggregate
 #' @importFrom dplyr setdiff
 #'
-#' @param Y a vector of outcomes
+#' @param Y a vector of binary outcomes; 1 if an event; 0 if not
 #' @param W a vector of treatment assignment; 1 for active treatment; 0 for control
 #' @param X a matrix of patient characteristics or individualized treatment effect predictions
 #' @param p.0 a vector of outcome probabilities under control
