@@ -8,6 +8,7 @@ calibration.plot(
   matched.patients = NULL,
   limits = list(ymin = -1, ymax = 1, xmin = -1, xmax = 1),
   plot.CI = FALSE,
+  show = TRUE,
   ...
 )
 }
@@ -17,6 +18,8 @@ calibration.plot(
 \item{limits}{list; indicating the x-axis and y-axis limits, e.g. list(ymin=-1, ymax=1, xmin=-1, xmax=1)}
 
 \item{plot.CI}{boolean; TRUE if you want to plot the confidence interval of the calibration plot of predicted versus observed treatment effect of matched patients}
+
+\item{show}{boolean; TRUE if you want to show the plot; FALSE if not}
 
 \item{...}{additional arguments for loess function from loess package}
 }
@@ -62,5 +65,6 @@ EB.out <- E.for.Benefit(Y=Y, W=W, X=X, p.0=p.0, p.1=p.1, tau.hat=tau.hat,
                         measure="nearest", distance="mahalanobis",
                         estimand=NULL, replace=FALSE)
 limits <- list(ymin=-1, ymax=1, xmin=-1, xmax=1)
-calibration.plot(matched.patients=EB.out$matched.patients, limits=limits, plot.CI=TRUE)
+calibration.plot(matched.patients=EB.out$matched.patients, limits=limits,
+                 plot.CI=TRUE, show=TRUE)
 }

@@ -22,6 +22,7 @@
 #' @param matched.patients dataframe; dataframe of matched patients, which contains a vector of predicted treatment effect (tau.hat), predicted treatment effect of matched patients (matched.tau.hat), and observed treatment effect (matched.tau.obs) of matched patients
 #' @param limits list; indicating the x-axis and y-axis limits, e.g. list(ymin=-1, ymax=1, xmin=-1, xmax=1)
 #' @param plot.CI boolean; TRUE if you want to plot the confidence interval of the calibration plot of predicted versus observed treatment effect of matched patients
+#' @param show boolean; TRUE if you want to show the plot; FALSE if not
 #' @param ... additional arguments for loess function from loess package
 #'
 #' @return The output of the E.for.benefit function is a "list" with the following components.
@@ -62,10 +63,11 @@
 #'                         measure="nearest", distance="mahalanobis",
 #'                         estimand=NULL, replace=FALSE)
 #' limits <- list(ymin=-1, ymax=1, xmin=-1, xmax=1)
-#' calibration.plot(matched.patients=EB.out$matched.patients, limits=limits, plot.CI=TRUE)
+#' calibration.plot(matched.patients=EB.out$matched.patients, limits=limits,
+#'                  plot.CI=TRUE, show=TRUE)
 calibration.plot <- function(matched.patients=NULL,
                              limits=list(ymin=-1, ymax=1, xmin=-1, xmax=1),
-                             plot.CI=FALSE, ...){
+                             plot.CI=FALSE, show=TRUE, ...){
   # ensure correct data types
   stopifnot("matched.patients must be a dataframe" = is.data.frame(matched.patients))
   stopifnot("CI must be a boolean (TRUE or FALSE)" = isTRUE(plot.CI)|isFALSE(plot.CI))
@@ -149,7 +151,9 @@ calibration.plot <- function(matched.patients=NULL,
   build.plot <- build.plot+ggplot2::geom_point(ggplot2::aes(x=x.of.quant[4], y=y.of.quant[4]), size=3)
 
   # show plot
-  methods::show(build.plot)
+  if (show){
+    methods::show(build.plot)
+  }
 
   return(list(matched.patients=matched.patients, build.plot=build.plot, quantiles=x.of.quant, se.quantiles=y.of.quant))
 }
