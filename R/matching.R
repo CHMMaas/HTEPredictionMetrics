@@ -57,6 +57,7 @@ match.patients <- function(Y, W, X,
                           estimand=NULL, replace=FALSE, ...){
   # ensure correct data types
   stopifnot("W must be a vector" = is.vector(W))
+  stopifnot("W must only consists of zeros and ones" = !sum(sort(unique(W))-c(0, 1)))
   stopifnot("X must be a vector or matrix" = is.matrix(X) | is.vector(X))
   stopifnot("p.0 must be a vector" = is.vector(p.0))
   stopifnot("p.1 must be a vector" = is.vector(p.1))
@@ -69,6 +70,26 @@ match.patients <- function(Y, W, X,
   stopifnot("p.1 must be numeric" = is.numeric(p.1))
   stopifnot("tau.hat must be numeric" = is.numeric(tau.hat))
   stopifnot("estimand must be ATT, ATC, ATE, or NULL" = is.null(estimand)|estimand=="ATT"|estimand=="ATC"|estimand=="ATE")
+
+  stopifnot("Y and W must be the same length" = length(Y)==length(W))
+  stopifnot("Y and X must have the same number of observations" = length(Y)==nrow(X))
+  stopifnot("Y and p.0 must be the same length" = length(Y)==length(p.0))
+  stopifnot("Y and p.1 must be the same length" = length(Y)==length(p.1))
+  stopifnot("Y and tau.hat must be the same length" = length(Y)==length(tau.hat))
+
+  stopifnot("W and X must have the same number of observations" = length(W)==nrow(X))
+  stopifnot("W and p.0 must be the same length" = length(W)==length(p.0))
+  stopifnot("W and p.1 must be the same length" = length(W)==length(p.1))
+  stopifnot("W and tau.hat must be the same length" = length(W)==length(tau.hat))
+
+  stopifnot("X and p.0 must have the same number of observations" = length(p.0)==nrow(X))
+  stopifnot("X and p.1 must have the same number of observations" = length(p.1)==nrow(X))
+  stopifnot("X and tau.hat must have the same number of observations" = length(tau.hat)==nrow(X))
+
+  stopifnot("p.0 and p.1 must be the same length" = length(p.1)==length(p.0))
+  stopifnot("p.0 and tau.hat must be the same length" = length(p.1)==length(p.0))
+
+  stopifnot("p.1 and tau.hat must be the same length" = length(p.1)==length(p.0))
 
   # combine all data in one dataframe
   data.df <- data.frame(match.id=1:length(Y),

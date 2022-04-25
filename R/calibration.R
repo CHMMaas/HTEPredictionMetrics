@@ -109,13 +109,13 @@ E.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
   # check user input
   stopifnot("nr.bootstraps must be a scalar" = length(nr.bootstraps)==1)
   stopifnot("nr.bootstraps must be numeric" = is.numeric(nr.bootstraps))
-  stopifnot("W must only consists of zeros and ones" = !sum(sort(unique(W))-c(0, 1)))
   stopifnot("CI must be a boolean (TRUE or FALSE)" = isTRUE(CI)|isFALSE(CI))
   stopifnot("message must be a boolean (TRUE or FALSE)" = isTRUE(message)|isFALSE(message))
 
   if (is.null(matched.patients)){
     # check user input
     stopifnot("W must be a vector" = is.vector(W))
+    stopifnot("W must only consists of zeros and ones" = !sum(sort(unique(W))-c(0, 1)))
     stopifnot("X must be a vector or matrix" = is.matrix(X) | is.vector(X))
     stopifnot("p.0 must be a vector" = is.vector(p.0))
     stopifnot("p.1 must be a vector" = is.vector(p.1))
@@ -127,6 +127,26 @@ E.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
     stopifnot("p.0 must be numeric" = is.numeric(p.0))
     stopifnot("p.1 must be numeric" = is.numeric(p.1))
     stopifnot("tau.hat must be numeric" = is.numeric(tau.hat))
+
+    stopifnot("Y and W must be the same length" = length(Y)==length(W))
+    stopifnot("Y and X must have the same number of observations" = length(Y)==nrow(X))
+    stopifnot("Y and p.0 must be the same length" = length(Y)==length(p.0))
+    stopifnot("Y and p.1 must be the same length" = length(Y)==length(p.1))
+    stopifnot("Y and tau.hat must be the same length" = length(Y)==length(tau.hat))
+
+    stopifnot("W and X must have the same number of observations" = length(W)==nrow(X))
+    stopifnot("W and p.0 must be the same length" = length(W)==length(p.0))
+    stopifnot("W and p.1 must be the same length" = length(W)==length(p.1))
+    stopifnot("W and tau.hat must be the same length" = length(W)==length(tau.hat))
+
+    stopifnot("X and p.0 must have the same number of observations" = length(p.0)==nrow(X))
+    stopifnot("X and p.1 must have the same number of observations" = length(p.1)==nrow(X))
+    stopifnot("X and tau.hat must have the same number of observations" = length(tau.hat)==nrow(X))
+
+    stopifnot("p.0 and p.1 must be the same length" = length(p.1)==length(p.0))
+    stopifnot("p.0 and tau.hat must be the same length" = length(p.1)==length(p.0))
+
+    stopifnot("p.1 and tau.hat must be the same length" = length(p.1)==length(p.0))
 
     # compute matched pairs
     matched.patients <- match.patients(Y=Y, W=W, X=X,

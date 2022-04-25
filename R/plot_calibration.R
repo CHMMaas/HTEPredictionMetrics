@@ -142,13 +142,13 @@ calibration.plot <- function(matched.patients=NULL,
 
   # add quantiles to plot
   build.plot <- build.plot+ggplot2::geom_segment(ggplot2::aes(x = x.of.quant[1], y = y.lower[1], xend = x.of.quant[1], yend = y.upper[1]), size=1)
-  build.plot <- build.plot+ggplot2::geom_point(ggplot2::aes(x=x.of.quant[1], y=y.of.quant[1]), size=3)
+  build.plot <- build.plot+ggplot2::geom_point(ggplot2::aes(x=x.of.quant[1], y=y.of.quant[1]), size=2)
   build.plot <- build.plot+ggplot2::geom_segment(ggplot2::aes(x = x.of.quant[2], y = y.lower[2], xend = x.of.quant[2], yend = y.upper[2]), size=1)
-  build.plot <- build.plot+ggplot2::geom_point(ggplot2::aes(x=x.of.quant[2], y=y.of.quant[2]), size=3)
+  build.plot <- build.plot+ggplot2::geom_point(ggplot2::aes(x=x.of.quant[2], y=y.of.quant[2]), size=2)
   build.plot <- build.plot+ggplot2::geom_segment(ggplot2::aes(x = x.of.quant[3], y = y.lower[3], xend = x.of.quant[3], yend = y.upper[3]), size=1)
-  build.plot <- build.plot+ggplot2::geom_point(ggplot2::aes(x=x.of.quant[3], y=y.of.quant[3]), size=3)
+  build.plot <- build.plot+ggplot2::geom_point(ggplot2::aes(x=x.of.quant[3], y=y.of.quant[3]), size=2)
   build.plot <- build.plot+ggplot2::geom_segment(ggplot2::aes(x = x.of.quant[4], y = y.lower[4], xend = x.of.quant[4], yend = y.upper[4]), size=1)
-  build.plot <- build.plot+ggplot2::geom_point(ggplot2::aes(x=x.of.quant[4], y=y.of.quant[4]), size=3)
+  build.plot <- build.plot+ggplot2::geom_point(ggplot2::aes(x=x.of.quant[4], y=y.of.quant[4]), size=2)
 
   # show plot
   if (show){

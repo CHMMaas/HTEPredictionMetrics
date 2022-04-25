@@ -27,6 +27,10 @@
 #' se <- runif(m)
 #' Rubin.combine(est, se)
 Rubin.combine<-function(est,se){
+  stopifnot("est must be a vector" = is.vector(est))
+  stopifnot("se must be a vector" = is.vector(se))
+  stopifnot("est and se must be the same length" = length(est)==length(se))
+
   m<-length(est)
   est.mi<-mean(est)
   var.w<-mean(se^2)
