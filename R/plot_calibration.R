@@ -20,6 +20,7 @@
 #' @importFrom ggplot2 .data
 #'
 #' @param matched.patients dataframe; dataframe of matched patients, which contains a vector of predicted treatment effect (tau.hat), predicted treatment effect of matched patients (matched.tau.hat), and observed treatment effect (matched.tau.obs) of matched patients
+#' @param g integer; indicating the number of groups in calibration plot
 #' @param limits list; indicating the x-axis and y-axis limits, e.g. list(ymin=-1, ymax=1, xmin=-1, xmax=1)
 #' @param plot.CI boolean; TRUE if you want to plot the confidence interval of the calibration plot of predicted versus observed treatment effect of matched patients
 #' @param show boolean; TRUE if you want to show the plot; FALSE if not
@@ -62,10 +63,11 @@
 #'                         matched.patients=NULL,
 #'                         measure="nearest", distance="mahalanobis",
 #'                         estimand=NULL, replace=FALSE)
+#' g <- 5
 #' limits <- list(ymin=-1, ymax=1, xmin=-1, xmax=1)
-#' calibration.plot(matched.patients=EB.out$matched.patients, limits=limits,
-#'                  plot.CI=TRUE, show=TRUE)
-calibration.plot <- function(matched.patients=NULL,
+#' calibration.plot(matched.patients=EB.out$matched.patients, g=g,
+#'                  limits=limits, plot.CI=TRUE, show=TRUE)
+calibration.plot <- function(matched.patients=NULL, g=5,
                              limits=list(ymin=-1, ymax=1, xmin=-1, xmax=1),
                              plot.CI=FALSE, show=TRUE, ...){
   # ensure correct data types
@@ -117,7 +119,7 @@ calibration.plot <- function(matched.patients=NULL,
 
   # plot quantiles
   quantiles <- c(min(matched.patients$matched.tau.hat)-0.01,
-                 as.numeric(quantile(matched.patients$matched.tau.hat, c(0.25, 0.5, 0.75))),
+                 as.numeric(quantile(matched.patients$matched.tau.hat, (1:(g-1)/g))),
                  max(matched.patients$matched.tau.hat))
   ordered.df <- matched.patients[order(matched.patients$matched.tau.hat), ]
   ordered.df$quantile.nr <- cut(ordered.df$matched.tau.hat, breaks=quantiles, labels=FALSE)
@@ -132,8 +134,8 @@ calibration.plot <- function(matched.patients=NULL,
   sd <- aggregate(ordered.df, list(ordered.df$quantile.nr), sd)$matched.tau.obs
 
   # determine confidence interval
-  n <- rep(NA, 4)
-  for (q.nr in 1:4){
+  n <- rep(NA, g)
+  for (q.nr in 1:g){
     n[q.nr] <- nrow(ordered.df[ordered.df$quantile.nr==q.nr,])
   }
   sd <- sqrt(sd^2/n)
@@ -141,19 +143,16 @@ calibration.plot <- function(matched.patients=NULL,
   y.upper <- y.of.quant+1.96*sd
 
   # add quantiles to plot
-  build.plot <- build.plot+ggplot2::geom_segment(ggplot2::aes(x = x.of.quant[1], y = y.lower[1], xend = x.of.quant[1], yend = y.upper[1]), size=1)
-  build.plot <- build.plot+ggplot2::geom_point(ggplot2::aes(x=x.of.quant[1], y=y.of.quant[1]), size=2)
-  build.plot <- build.plot+ggplot2::geom_segment(ggplot2::aes(x = x.of.quant[2], y = y.lower[2], xend = x.of.quant[2], yend = y.upper[2]), size=1)
-  build.plot <- build.plot+ggplot2::geom_point(ggplot2::aes(x=x.of.quant[2], y=y.of.quant[2]), size=2)
-  build.plot <- build.plot+ggplot2::geom_segment(ggplot2::aes(x = x.of.quant[3], y = y.lower[3], xend = x.of.quant[3], yend = y.upper[3]), size=1)
-  build.plot <- build.plot+ggplot2::geom_point(ggplot2::aes(x=x.of.quant[3], y=y.of.quant[3]), size=2)
-  build.plot <- build.plot+ggplot2::geom_segment(ggplot2::aes(x = x.of.quant[4], y = y.lower[4], xend = x.of.quant[4], yend = y.upper[4]), size=1)
-  build.plot <- build.plot+ggplot2::geom_point(ggplot2::aes(x=x.of.quant[4], y=y.of.quant[4]), size=2)
+  df.quantiles <- data.frame(x=x.of.quant, y.lower=y.lower, y.upper=y.upper)
+  build.plot <- build.plot+ggplot2::geom_segment(data=df.quantiles,
+                                                 mapping=ggplot2::aes(x = x.of.quant, y = y.lower, xend = x.of.quant, yend = y.upper), size=1)
+  build.plot <- build.plot+ggplot2::geom_point(data=df.quantiles,
+                                               mapping=ggplot2::aes(x=x.of.quant, y=y.of.quant), size=2)
 
   # show plot
   if (show){
     methods::show(build.plot)
   }
 
-  return(list(matched.patients=matched.patients, build.plot=build.plot, quantiles=x.of.quant, se.quantiles=y.of.quant))
+  return(list(matched.patients=matched.patients, build.plot=build.plot, quantiles=x.of.quant, se.quantiles=sd))
 }

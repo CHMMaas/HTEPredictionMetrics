@@ -6,6 +6,7 @@
 \usage{
 calibration.plot(
   matched.patients = NULL,
+  g = 5,
   limits = list(ymin = -1, ymax = 1, xmin = -1, xmax = 1),
   plot.CI = FALSE,
   show = TRUE,
@@ -14,6 +15,8 @@ calibration.plot(
 }
 \arguments{
 \item{matched.patients}{dataframe; dataframe of matched patients, which contains a vector of predicted treatment effect (tau.hat), predicted treatment effect of matched patients (matched.tau.hat), and observed treatment effect (matched.tau.obs) of matched patients}
+
+\item{g}{integer; indicating the number of groups in calibration plot}
 
 \item{limits}{list; indicating the x-axis and y-axis limits, e.g. list(ymin=-1, ymax=1, xmin=-1, xmax=1)}
 
@@ -64,7 +67,8 @@ EB.out <- E.for.Benefit(Y=Y, W=W, X=X, p.0=p.0, p.1=p.1, tau.hat=tau.hat,
                         matched.patients=NULL,
                         measure="nearest", distance="mahalanobis",
                         estimand=NULL, replace=FALSE)
+g <- 5
 limits <- list(ymin=-1, ymax=1, xmin=-1, xmax=1)
-calibration.plot(matched.patients=EB.out$matched.patients, limits=limits,
-                 plot.CI=TRUE, show=TRUE)
+calibration.plot(matched.patients=EB.out$matched.patients, g=g,
+                 limits=limits, plot.CI=TRUE, show=TRUE)
 }
