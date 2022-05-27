@@ -41,6 +41,9 @@ For an example of how to use the "OP.for.Benefit" function, have look at "Exampl
 # Other functions
 Some other useful functions included in this package.
 
+# plot.calibration
+This function enables to plot the calibration plot of treatment effect by plotting the observed versus the predicted treatment effect of matched pairs.
+
 # Rubin.combine
 This function combines multiple estimates with multiples standard errors using the Rubin's rule.
 
@@ -48,4 +51,4 @@ This function combines multiple estimates with multiples standard errors using t
 
 van Klaveren D, Steyerberg EW, Serruys PW, Kent DM. The proposed 'concordance-statistic for benefit' provided a useful metric when modeling heterogeneous treatment effects. J Clin Epidemiol. 2018 Feb;94:59-68. doi: 10.1016/j.jclinepi.2017.10.021. Epub 2017 Nov 11. PMID: 29132832; PMCID: PMC7448760.
 
-Maas C.C.H.M., van Klaveren D. Performance metrics for models predicting individualized treatment effect of patients. 2022. Not published yet.
+Maas C.C.H.M., van Klaveren D. Performance metrics for models predicting individualized treatment effect of patients. 2022. Not published yet (MedArchiveLink)
