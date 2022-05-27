@@ -157,18 +157,19 @@ OP.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
   I.min1 <- matched.patients$matched.tau.obs==-1
 
   # Brier score for benefit
+  n.pairs <- length(unique(matched.patients$subclass))
   Brier.for.Benefit <- (sum((t.1-I.1)^2)
                         +sum((t.0-I.0)^2)
-                        +sum((t.min1-I.min1)^2))/(2*length(matched.patients$matched.tau.obs))
+                        +sum((t.min1-I.min1)^2))/(2*n.pairs)
 
   # Logistic loss for benefit
   omit <- which(t.1<0 | t.0<0 | t.min1<0)
   if (length(omit)>0 & message){
     cat('nr. omitted observations for log loss:', length(omit), '\n')
-    Log.Loss.for.Benefit <- -(sum(I.1[-omit]*log(t.1[-omit]))+sum(I.0[-omit]*log(t.0[-omit]))+sum(I.min1[-omit]*log(t.min1[-omit])))/length(matched.patients$matched.tau.obs)
+    Log.Loss.for.Benefit <- -(sum(I.1[-omit]*log(t.1[-omit]))+sum(I.0[-omit]*log(t.0[-omit]))+sum(I.min1[-omit]*log(t.min1[-omit])))/n.pairs
   }
   else{
-    Log.Loss.for.Benefit <- -(sum(I.1*log(t.1))+sum(I.0*log(t.0))+sum(I.min1*log(t.min1)))/length(matched.patients$matched.tau.obs)
+    Log.Loss.for.Benefit <- -(sum(I.1*log(t.1))+sum(I.0*log(t.0))+sum(I.min1*log(t.min1)))/n.pairs
   }
 
   if (CI){
@@ -199,7 +200,7 @@ OP.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
       # Brier score for benefit
       Brier.for.Benefit.B <- (sum((t.1.B-I.1.B)^2)
                             +sum((t.0.B-I.0.B)^2)
-                            +sum((t.min1.B-I.min1.B)^2))/(2*length(duplicated.matched.patients$matched.tau.obs))
+                            +sum((t.min1.B-I.min1.B)^2))/(2*n.pairs)
 
       # Logistic loss for benefit
       omit.B <- which(t.1.B<0 | t.0.B<0 | t.min1.B<0)
@@ -207,12 +208,12 @@ OP.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
         cat('nr. omitted observations for log loss:', length(omit.B), '\n')
         Log.Loss.for.Benefit.B <- -(sum(I.1.B[-omit.B]*log(t.1.B[-omit.B]))
                                     +sum(I.0.B[-omit.B]*log(t.0.B[-omit.B]))
-                                    +sum(I.min1.B[-omit.B]*log(t.min1[-omit.B])))/length(duplicated.matched.patients$matched.tau.obs)
+                                    +sum(I.min1.B[-omit.B]*log(t.min1[-omit.B])))/n.pairs
       }
       else{
         Log.Loss.for.Benefit.B <- -(sum(I.1.B*log(t.1.B))
                                   +sum(I.0.B*log(t.0.B))
-                                  +sum(I.min1.B*log(t.min1.B)))/length(duplicated.matched.patients$matched.tau.obs)
+                                  +sum(I.min1.B*log(t.min1.B)))/n.pairs
       }
 
       # calculate calibration metrics
