@@ -136,7 +136,8 @@ calibration.plot <- function(matched.patients=NULL, g=5,
   # determine confidence interval
   n <- rep(NA, g)
   for (q.nr in 1:g){
-    n[q.nr] <- nrow(ordered.df[ordered.df$quantile.nr==q.nr,])
+    # n is the number of pairs in each group
+    n[q.nr] <- length(unique(ordered.df[ordered.df$quantile.nr==q.nr, "subclass"]))
   }
   sd <- sqrt(sd^2/n)
   y.lower <- y.of.quant-1.96*sd
