@@ -15,8 +15,8 @@
 #' @importFrom ggplot2 geom_point
 #' @importFrom ggplot2 geom_segment
 #' @importFrom ggplot2 labs
-#' @importFrom ggplot2 ylim
-#' @importFrom ggplot2 xlim
+#' @importFrom ggplot2 scale_y_continuous
+#' @importFrom ggplot2 scale_x_continuous
 #' @importFrom ggplot2 .data
 #'
 #' @param matched.patients dataframe; dataframe of matched patients, which contains a vector of predicted treatment effect (tau.hat), predicted treatment effect of matched patients (matched.tau.hat), and observed treatment effect (matched.tau.obs) of matched patients
@@ -107,8 +107,12 @@ calibration.plot <- function(matched.patients=NULL, g=5,
                              y="Observed treatment effect", color=" ")   # axis names
 
   # edit limits
-  build.plot <- build.plot+ggplot2::ylim(limits$ymin, limits$ymax)
-  build.plot <- build.plot+ggplot2::xlim(limits$xmin, limits$xmax)
+  build.plot <- build.plot+ggplot2::scale_y_continuous(labels=round(seq(limits$ymin, limits$ymax, 0.2), 1),
+                                                       breaks=round(seq(limits$ymin, limits$ymax, 0.2), 1),
+                                                       limits=c(limits$ymin, limits$ymax))
+  build.plot <- build.plot+ggplot2::scale_x_continuous(labels=round(seq(limits$xmin, limits$xmax, 0.2), 1),
+                                                       breaks=round(seq(limits$xmin, limits$xmax, 0.2), 1),
+                                                       limits=c(limits$xmin, limits$xmax))
 
   # plot confidence interval
   if (plot.CI){
