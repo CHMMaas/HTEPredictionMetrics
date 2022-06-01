@@ -105,12 +105,12 @@ calibration.plot <- function(matched.patients=NULL, g=5,
                 ggplot2::geom_abline(intercept=0, linetype="dashed")+# 45-degree line
                 ggplot2::labs(x="Predicted treatment effect",
                              y="Observed treatment effect", color=" ")+   # axis names
-                ggplot2::scale_y_continuous(labels=round(seq(from=max(limits$ymin, -1), to=min(limits$ymax, 1), length.out=5), 1),
-                                                       breaks=round(seq(from=max(limits$ymin, -1), to=min(limits$ymax, 1), length.out=5), 1),
-                                                       limits=c(limits$ymin, limits$ymax))+
-                ggplot2::scale_x_continuous(labels=round(seq(from=max(limits$xmin, -1), to=min(limits$xmax, 1), length.out=5), 1),
-                                                       breaks=round(seq(from=max(limits$xmin, -1), to=min(limits$xmax, 1), length.out=5), 1),
-                                                       limits=c(limits$xmin, limits$xmax))
+    ggplot2::scale_y_continuous(labels=round(seq(from=max(limits$ymin, -1), to=min(limits$ymax, 1), length.out=5), 1),
+                                breaks=round(seq(from=max(limits$ymin, -1), to=min(limits$ymax, 1), length.out=5), 1),
+                                limits=c(limits$ymin, limits$ymax))+
+    ggplot2::scale_x_continuous(labels=round(seq(from=max(limits$xmin, -1), to=min(limits$xmax, 1), length.out=5), 1),
+                                breaks=round(seq(from=max(limits$xmin, -1), to=min(limits$xmax, 1), length.out=5), 1),
+                                limits=c(limits$xmin, limits$xmax))
 
   # plot confidence interval
   if (plot.CI){
