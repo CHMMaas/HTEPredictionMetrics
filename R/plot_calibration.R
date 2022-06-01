@@ -108,8 +108,8 @@ calibration.plot <- function(matched.patients=NULL, g=5,
     ggplot2::scale_y_continuous(labels=round(seq(from=max(limits$ymin, -1), to=min(limits$ymax, 1), length.out=5), 1),
                                 breaks=round(seq(from=max(limits$ymin, -1), to=min(limits$ymax, 1), length.out=5), 1),
                                 limits=c(limits$ymin, limits$ymax))+
-    ggplot2::scale_x_continuous(labels=round(seq(from=max(limits$xmin, -1), to=min(limits$xmax, 1), length.out=5), 1),
-                                breaks=round(seq(from=max(limits$xmin, -1), to=min(limits$xmax, 1), length.out=5), 1),
+    ggplot2::scale_x_continuous(labels=round(seq(from=min(limits$xmin, 0), to=max(limits$xmax, 1), length.out=5), 1),
+                                breaks=round(seq(from=min(limits$xmin, 0), to=max(limits$xmax, 1), length.out=5), 1),
                                 limits=c(limits$xmin, limits$xmax))
 
   # plot confidence interval
