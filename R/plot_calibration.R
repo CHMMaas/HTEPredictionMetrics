@@ -98,20 +98,18 @@ calibration.plot <- function(matched.patients=NULL, g=5,
 
   # create plot
   build.plot <- ggplot2::ggplot(data=matched.patients, ggplot2::aes(x= .data$matched.tau.hat),
-                          show.legend=TRUE)                     # set data
-  build.plot <- build.plot+ggplot2::theme_light(base_size=22)               # increase font size
-  build.plot <- build.plot+ggplot2::geom_line(ggplot2::aes(y= .data$tau.smoothed), # plot LOESS line
-                                  color="blue", size=1)
-  build.plot <- build.plot+ggplot2::geom_abline(intercept=0, linetype="dashed")# 45-degree line
-  build.plot <- build.plot+ggplot2::labs(x="Predicted treatment effect",
-                             y="Observed treatment effect", color=" ")   # axis names
-
-  # edit limits
-  build.plot <- build.plot+ggplot2::scale_y_continuous(labels=round(seq(limits$ymin, limits$ymax, 0.2), 1),
-                                                       breaks=round(seq(limits$ymin, limits$ymax, 0.2), 1),
-                                                       limits=c(limits$ymin, limits$ymax))
-  build.plot <- build.plot+ggplot2::scale_x_continuous(labels=round(seq(limits$xmin, limits$xmax, 0.2), 1),
-                                                       breaks=round(seq(limits$xmin, limits$xmax, 0.2), 1),
+                          show.legend=TRUE)+                     # set data
+                ggplot2::theme_light(base_size=22)+               # increase font size
+                ggplot2::geom_line(ggplot2::aes(y= .data$tau.smoothed), # plot LOESS line
+                                                color="blue", size=1)+
+                ggplot2::geom_abline(intercept=0, linetype="dashed")+# 45-degree line
+                ggplot2::labs(x="Predicted treatment effect",
+                             y="Observed treatment effect", color=" ")+   # axis names
+                ggplot2::scale_y_continuous(labels=round(seq(from=limits$ymin, to=limits$ymax, length.out=10), 1),
+                                                       breaks=round(seq(from=limits$ymin, to=limits$ymax, length.out=10), 1),
+                                                       limits=c(limits$ymin, limits$ymax))+
+                ggplot2::scale_x_continuous(labels=round(seq(from=limits$xmin, to=limits$xmax, length.out=10), 1),
+                                                       breaks=round(seq(from=limits$xmin, to=limits$xmax, length.out=10), 1),
                                                        limits=c(limits$xmin, limits$xmax))
 
   # plot confidence interval
@@ -150,8 +148,8 @@ calibration.plot <- function(matched.patients=NULL, g=5,
   # add quantiles to plot
   df.quantiles <- data.frame(x=x.of.quant, y.lower=y.lower, y.upper=y.upper)
   build.plot <- build.plot+ggplot2::geom_segment(data=df.quantiles,
-                                                 mapping=ggplot2::aes(x = x.of.quant, y = y.lower, xend = x.of.quant, yend = y.upper), size=1)
-  build.plot <- build.plot+ggplot2::geom_point(data=df.quantiles,
+                                                 mapping=ggplot2::aes(x = x.of.quant, y = y.lower, xend = x.of.quant, yend = y.upper), size=1)+
+                            ggplot2::geom_point(data=df.quantiles,
                                                mapping=ggplot2::aes(x=x.of.quant, y=y.of.quant), size=2)
 
   # show plot
