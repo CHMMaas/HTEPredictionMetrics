@@ -51,6 +51,7 @@
 #'
 #' @examples
 #' library(HTEPredictionMetrics)
+#' set.seed(1)
 #' n <- 100
 #' Y <- sample(0:1, n, replace=TRUE)
 #' W <- sample(0:1, n, replace=TRUE)
@@ -133,27 +134,30 @@ C.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
     stopifnot("matched.patients must be a dataframe" = is.data.frame(matched.patients))
   }
 
-  # calculate C-for-benefit
-  cindex <- Hmisc::rcorr.cens(matched.patients$matched.tau.hat, matched.patients$matched.tau.obs)
-  c.for.benefit <- cindex["C Index"][[1]]
+  # set up df to calculate OP
+  matched.patients.undup <- matched.patients[, c("subclass", "matched.tau.obs", "matched.p.0", "matched.p.1", "matched.tau.hat")]
+  # remove duplicates from matched.patients data frame
+  matched.patients.undup <- matched.patients.undup[rep(c(TRUE, FALSE), nrow(matched.patients.undup)/2),]
 
+  # calculate C-for-benefit
+  cindex <- Hmisc::rcorr.cens(matched.patients.undup$matched.tau.hat, matched.patients.undup$matched.tau.obs)
+  c.for.benefit <- cindex["C Index"][[1]]
   if (CI){
     if (message){
       cat('Calculating confidence interval... Taking too long? Lower the number of bootstraps. \n')
     }
     CB.for.CI <- c()
+    # bootstrap matched patient pairs
     for (B in 1:nr.bootstraps){
-      # bootstrap matched patient pairs
-      subclass.IDs <- unique(matched.patients$subclass)
+      # obtain all subclass IDs
+      subclass.IDs <- sort(unique(matched.patients.undup$subclass))
+      # sample randomly from subclass IDs
       sample.subclass <- sample(subclass.IDs, length(subclass.IDs), replace=TRUE)
-      dup.subclass.IDs <- c()
-      for (i in sample.subclass){
-        dup.subclass.IDs <- c(dup.subclass.IDs, matched.patients[matched.patients$subclass==i, 'match.id'])
-      }
-      duplicated.matched.patients <- dplyr::slice(matched.patients, dup.subclass.IDs)
+      # data frame of duplicated patients
+      matched.patients.dup <- dplyr::slice(matched.patients.undup, sample.subclass)
 
       # calculate C-for-benefit for duplicated matched pairs
-      duplicated.cindex <- Hmisc::rcorr.cens(duplicated.matched.patients$matched.tau.hat, duplicated.matched.patients$matched.tau.obs)
+      duplicated.cindex <- Hmisc::rcorr.cens(matched.patients.dup$matched.tau.hat, matched.patients.dup$matched.tau.obs)
       CB.for.CI <- c(CB.for.CI, duplicated.cindex["C Index"][[1]])
     }
     lower.CI <- as.numeric(stats::quantile(CB.for.CI, 0.025))

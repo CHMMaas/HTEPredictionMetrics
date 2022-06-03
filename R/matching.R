@@ -38,6 +38,7 @@
 #'
 #' @examples
 #' library(HTEPredictionMetrics)
+#' set.seed(1)
 #' n <- 100
 #' Y <- sample(0:1, n, replace=TRUE)
 #' W <- sample(0:1, n, replace=TRUE)

@@ -77,6 +77,7 @@
 #'
 #' @examples
 #' library(HTEPredictionMetrics)
+#' set.seed(1)
 #' n <- 100
 #' Y <- sample(0:1, n, replace=TRUE)
 #' W <- sample(0:1, n, replace=TRUE)
@@ -159,15 +160,20 @@ E.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
     stopifnot("matched.patients must be a dataframe" = is.data.frame(matched.patients))
   }
 
+  # set up df to calculate OP
+  matched.patients.undup <- matched.patients[, c("subclass", "matched.tau.obs", "matched.p.0", "matched.p.1", "matched.tau.hat")]
+  # remove duplicates from matched.patients data frame
+  matched.patients.undup <- matched.patients.undup[rep(c(TRUE, FALSE), nrow(matched.patients.undup)/2),]
+
   # perform smoothing on matched patient pairs
   loess.calibrate <- stats::loess(matched.tau.obs ~ matched.tau.hat,
-                                  data=matched.patients)
-  matched.patients$tau.smoothed <- predict(loess.calibrate)
+                                  data=matched.patients.undup)
+  matched.patients.undup$tau.smoothed <- predict(loess.calibrate)
 
   # calculate calibration metrics
-  Eavg.for.benefit <- mean(abs(matched.patients$tau.smoothed - matched.patients$matched.tau.hat))
-  E50.for.benefit <- stats::median(abs(matched.patients$tau.smoothed - matched.patients$matched.tau.hat))
-  E90.for.benefit <- as.numeric(stats::quantile(abs(matched.patients$tau.smoothed - matched.patients$matched.tau.hat), probs=0.9))
+  Eavg.for.benefit <- mean(abs(matched.patients.undup$tau.smoothed - matched.patients.undup$matched.tau.hat))
+  E50.for.benefit <- stats::median(abs(matched.patients.undup$tau.smoothed - matched.patients.undup$matched.tau.hat))
+  E90.for.benefit <- as.numeric(stats::quantile(abs(matched.patients.undup$tau.smoothed - matched.patients.undup$matched.tau.hat), probs=0.9))
 
   if (CI){
     if (message){
@@ -176,25 +182,24 @@ E.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
     Eavg.for.CI <- c()
     E50.for.CI <- c()
     E90.for.CI <- c()
+    # bootstrap matched patient pairs
     for (B in 1:nr.bootstraps){
-      # bootstrap matched patient pairs
-      subclass.IDs <- unique(matched.patients$subclass)
+      # obtain all subclass IDs
+      subclass.IDs <- sort(unique(matched.patients.undup$subclass))
+      # sample randomly from subclass IDs
       sample.subclass <- sample(subclass.IDs, length(subclass.IDs), replace=TRUE)
-      dup.subclass.IDs <- c()
-      for (i in sample.subclass){
-        dup.subclass.IDs <- c(dup.subclass.IDs, matched.patients[matched.patients$subclass==i, 'match.id'])
-      }
-      duplicated.matched.patients <- dplyr::slice(matched.patients, dup.subclass.IDs)
+      # data frame of duplicated patients
+      matched.patients.dup <- dplyr::slice(matched.patients.undup, sample.subclass)
 
       # perform smoothing on matched patient pairs
       loess.calibrate.B <- stats::loess(matched.tau.obs ~ matched.tau.hat,
-                                        data=duplicated.matched.patients)
-      tau.smoothed.B <- stats::predict(loess.calibrate, newdata=duplicated.matched.patients)
+                                        data=matched.patients.dup)
+      tau.smoothed.B <- stats::predict(loess.calibrate, newdata=matched.patients.dup)
 
       # calculate calibration metrics
-      Eavg.for.CI <- c(Eavg.for.CI, mean(abs(tau.smoothed.B - duplicated.matched.patients$matched.tau.hat)))
-      E50.for.CI <- c(E50.for.CI, stats::median(abs(tau.smoothed.B - duplicated.matched.patients$matched.tau.hat)))
-      E90.for.CI <- c(E90.for.CI, as.numeric(stats::quantile(abs(tau.smoothed.B - duplicated.matched.patients$matched.tau.hat), probs=0.9)))
+      Eavg.for.CI <- c(Eavg.for.CI, mean(abs(tau.smoothed.B - matched.patients.dup$matched.tau.hat)))
+      E50.for.CI <- c(E50.for.CI, stats::median(abs(tau.smoothed.B - matched.patients.dup$matched.tau.hat)))
+      E90.for.CI <- c(E90.for.CI, as.numeric(stats::quantile(abs(tau.smoothed.B - matched.patients.dup$matched.tau.hat), probs=0.9)))
     }
     Eavg.lower.CI <- as.numeric(stats::quantile(Eavg.for.CI, 0.025))
     Eavg.upper.CI <- as.numeric(stats::quantile(Eavg.for.CI, 0.975))

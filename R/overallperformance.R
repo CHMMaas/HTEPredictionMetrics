@@ -64,6 +64,7 @@
 #'
 #' @examples
 #' library(HTEPredictionMetrics)
+#' set.seed(1)
 #' n <- 100
 #' Y <- sample(0:1, n, replace=TRUE)
 #' W <- sample(0:1, n, replace=TRUE)
@@ -147,29 +148,34 @@ OP.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
     stopifnot("matched.patients must be a dataframe" = is.data.frame(matched.patients))
   }
 
-  # set up quantities
-  t.1 <- (1-matched.patients$p.1)*matched.patients$p.0
-  t.0 <- (1-matched.patients$p.1)*(1-matched.patients$p.0) + matched.patients$p.1*matched.patients$p.0
-  t.min1 <- matched.patients$p.1*(1-matched.patients$p.0)
+  # set up df to calculate OP
+  matched.patients.undup <- matched.patients[, c("subclass", "matched.tau.obs", "matched.p.0", "matched.p.1", "matched.tau.hat")]
+  # remove duplicates from matched.patients data frame
+  matched.patients.undup <- matched.patients.undup[rep(c(TRUE, FALSE), nrow(matched.patients.undup)/2),]
 
-  I.1 <- matched.patients$matched.tau.obs==1
-  I.0 <- matched.patients$matched.tau.obs==0
-  I.min1 <- matched.patients$matched.tau.obs==-1
+  # prepare tau and indicator functions
+  t.1 <- (1-matched.patients.undup$matched.p.1)*matched.patients.undup$matched.p.0
+  t.0 <- (1-matched.patients.undup$matched.p.1)*(1-matched.patients.undup$matched.p.0) + matched.patients.undup$matched.p.1*matched.patients.undup$matched.p.0
+  t.min1 <- matched.patients.undup$matched.p.1*(1-matched.patients.undup$matched.p.0)
+
+  I.1 <- matched.patients.undup$matched.tau.obs==1
+  I.0 <- matched.patients.undup$matched.tau.obs==0
+  I.min1 <- matched.patients.undup$matched.tau.obs==-1
 
   # Brier score for benefit
-  n <- nrow(matched.patients)
+  n.p <- nrow(matched.patients.undup)
   Brier.for.Benefit <- (sum((t.1-I.1)^2)
                         +sum((t.0-I.0)^2)
-                        +sum((t.min1-I.min1)^2))/(2*n)
+                        +sum((t.min1-I.min1)^2))/(2*n.p)
 
   # Logistic loss for benefit
   omit <- which(t.1<0 | t.0<0 | t.min1<0)
   if (length(omit)>0 & message){
     cat('nr. omitted observations for log loss:', length(omit), '\n')
-    Log.Loss.for.Benefit <- -(sum(I.1[-omit]*log(t.1[-omit]))+sum(I.0[-omit]*log(t.0[-omit]))+sum(I.min1[-omit]*log(t.min1[-omit])))/n
+    Log.Loss.for.Benefit <- -(sum(I.1[-omit]*log(t.1[-omit]))+sum(I.0[-omit]*log(t.0[-omit]))+sum(I.min1[-omit]*log(t.min1[-omit])))/n.p
   }
   else{
-    Log.Loss.for.Benefit <- -(sum(I.1*log(t.1))+sum(I.0*log(t.0))+sum(I.min1*log(t.min1)))/n
+    Log.Loss.for.Benefit <- -(sum(I.1*log(t.1))+sum(I.0*log(t.0))+sum(I.min1*log(t.min1)))/n.p
   }
 
   if (CI){
@@ -178,29 +184,28 @@ OP.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
     }
     Log.Loss.for.CI <- c()
     Brier.for.CI <- c()
+    # bootstrap matched patient pairs
     for (B in 1:nr.bootstraps){
-      # bootstrap matched patient pairs
-      subclass.IDs <- unique(matched.patients$subclass)
+      # obtain all subclass IDs
+      subclass.IDs <- sort(unique(matched.patients.undup$subclass))
+      # sample randomly from subclass IDs
       sample.subclass <- sample(subclass.IDs, length(subclass.IDs), replace=TRUE)
-      dup.subclass.IDs <- c()
-      for (i in sample.subclass){
-        dup.subclass.IDs <- c(dup.subclass.IDs, matched.patients[matched.patients$subclass==i, 'match.id'])
-      }
-      duplicated.matched.patients <- dplyr::slice(matched.patients, dup.subclass.IDs)
+      # data frame of duplicated patients
+      matched.patients.dup <- dplyr::slice(matched.patients.undup, sample.subclass)
 
       # set up quantities
-      t.1.B <- (1-duplicated.matched.patients$p.1)*duplicated.matched.patients$p.0
-      t.0.B <- (1-duplicated.matched.patients$p.1)*(1-duplicated.matched.patients$p.0) + duplicated.matched.patients$p.1*duplicated.matched.patients$p.0
-      t.min1.B <- duplicated.matched.patients$p.1*(1-duplicated.matched.patients$p.0)
+      t.1.B <- (1-matched.patients.dup$matched.p.1)*matched.patients.dup$matched.p.0
+      t.0.B <- (1-matched.patients.dup$matched.p.1)*(1-matched.patients.dup$matched.p.0) + matched.patients.dup$matched.p.1*matched.patients.dup$matched.p.0
+      t.min1.B <- matched.patients.dup$matched.p.1*(1-matched.patients.dup$matched.p.0)
 
-      I.1.B <- duplicated.matched.patients$matched.tau.obs==1
-      I.0.B <- duplicated.matched.patients$matched.tau.obs==0
-      I.min1.B <- duplicated.matched.patients$matched.tau.obs==-1
+      I.1.B <- matched.patients.dup$matched.tau.obs==1
+      I.0.B <- matched.patients.dup$matched.tau.obs==0
+      I.min1.B <- matched.patients.dup$matched.tau.obs==-1
 
       # Brier score for benefit
       Brier.for.Benefit.B <- (sum((t.1.B-I.1.B)^2)
-                            +sum((t.0.B-I.0.B)^2)
-                            +sum((t.min1.B-I.min1.B)^2))/(2*n)
+                              +sum((t.0.B-I.0.B)^2)
+                              +sum((t.min1.B-I.min1.B)^2))/(2*n.p)
 
       # Logistic loss for benefit
       omit.B <- which(t.1.B<0 | t.0.B<0 | t.min1.B<0)
@@ -208,12 +213,12 @@ OP.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
         cat('nr. omitted observations for log loss:', length(omit.B), '\n')
         Log.Loss.for.Benefit.B <- -(sum(I.1.B[-omit.B]*log(t.1.B[-omit.B]))
                                     +sum(I.0.B[-omit.B]*log(t.0.B[-omit.B]))
-                                    +sum(I.min1.B[-omit.B]*log(t.min1[-omit.B])))/n
+                                    +sum(I.min1.B[-omit.B]*log(t.min1[-omit.B])))/n.p
       }
       else{
         Log.Loss.for.Benefit.B <- -(sum(I.1.B*log(t.1.B))
                                   +sum(I.0.B*log(t.0.B))
-                                  +sum(I.min1.B*log(t.min1.B)))/n
+                                  +sum(I.min1.B*log(t.min1.B)))/n.p
       }
 
       # calculate calibration metrics

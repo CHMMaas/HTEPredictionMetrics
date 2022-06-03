@@ -22,6 +22,7 @@
 #'
 #' @examples
 #' library(HTEPredictionMetrics)
+#' set.seed(1)
 #' m <- 5 # number of imputations
 #' est <- runif(m)
 #' se <- runif(m)
