@@ -106,6 +106,7 @@ calibration.plot <- function(matched.patients=NULL, g=5,
                 ggplot2::labs(x="Predicted treatment effect",
                              y="Observed treatment effect", color=" ")+   # axis names
     print(round(seq(from=min(limits$ymin, -1), to=max(limits$ymax, 1), length.out=5), 1))
+  print('hi')
     ggplot2::scale_y_continuous(labels=round(seq(from=min(limits$ymin, -1), to=max(limits$ymax, 1), length.out=5), 1),
                                 breaks=round(seq(from=min(limits$ymin, -1), to=max(limits$ymax, 1), length.out=5), 1),
                                 limits=c(limits$ymin, limits$ymax))+
