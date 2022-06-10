@@ -27,7 +27,11 @@
 #'
 #' df.matched.patients
 #'
-#' a dataframe containing the matched pairs
+#' a dataframe containing the matched patients, thus each individual is included in this dataframe
+#'
+#' df.matched.pairs
+#'
+#' a dataframe containing only the matched pairs, and not the individuals
 #'
 #'
 #' discarded
@@ -134,5 +138,12 @@ match.patients <- function(Y, W, X,
   # matched treatment effect
   matched.patients$matched.tau.hat <- matched.patients$matched.p.0 - matched.patients$matched.p.1
 
-  return(list(df.matched.patients=matched.patients, discarded=discarded))
+  # set up df to calculate OP
+  matched.patients.undup <- matched.patients[, c("subclass", "matched.tau.obs", "matched.p.0", "matched.p.1", "matched.tau.hat")]
+  # remove duplicates from matched.patients data frame
+  matched.patients.undup <- matched.patients.undup[rep(c(TRUE, FALSE), nrow(matched.patients.undup)/2),]
+
+  return(list(df.matched.patients=matched.patients,
+              df.matched.pairs=matched.patients.undup,
+              discarded=discarded))
 }

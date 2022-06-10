@@ -107,7 +107,7 @@ out.matched <- match.patients(Y=Y, W=W, X=X,
                               CI=FALSE, nr.bootstraps=50, message=TRUE,
                               measure="nearest", distance="mahalanobis",
                               estimand=NULL, replace=FALSE)
-CB.out <- C.for.Benefit(matched.patients=out.matched$df.matched.patients,
+CB.out <- C.for.Benefit(matched.patients=out.matched$df.matched.pairs,
                         CI=TRUE, nr.bootstraps=100, message=TRUE, replace=FALSE)
 CB.out
 }

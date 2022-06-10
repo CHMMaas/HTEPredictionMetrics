@@ -85,7 +85,7 @@
 #'                               CI=FALSE, nr.bootstraps=50, message=TRUE,
 #'                               measure="nearest", distance="mahalanobis",
 #'                               estimand=NULL, replace=FALSE)
-#' OP.out <- OP.for.Benefit(matched.patients=out.matched$df.matched.patients,
+#' OP.out <- OP.for.Benefit(matched.patients=out.matched$df.matched.pairs,
 #'                         CI=TRUE, nr.bootstraps=100, message=TRUE, replace=FALSE)
 #' OP.out
 OP.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
@@ -141,29 +141,24 @@ OP.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
     matched.patients <- match.patients(Y=Y, W=W, X=X,
                                         p.0=p.0, p.1=p.1, tau.hat=tau.hat,
                                         measure=measure, distance=distance,
-                                        estimand=estimand, replace=replace, ...)$df.matched.patients
+                                        estimand=estimand, replace=replace, ...)$df.matched.pairs
   }
   else{
     # use the dataframe provided by the user
     stopifnot("matched.patients must be a dataframe" = is.data.frame(matched.patients))
   }
 
-  # set up df to calculate OP
-  matched.patients.undup <- matched.patients[, c("subclass", "matched.tau.obs", "matched.p.0", "matched.p.1", "matched.tau.hat")]
-  # remove duplicates from matched.patients data frame
-  matched.patients.undup <- matched.patients.undup[rep(c(TRUE, FALSE), nrow(matched.patients.undup)/2),]
-
   # prepare tau and indicator functions
-  t.1 <- (1-matched.patients.undup$matched.p.1)*matched.patients.undup$matched.p.0
-  t.0 <- (1-matched.patients.undup$matched.p.1)*(1-matched.patients.undup$matched.p.0) + matched.patients.undup$matched.p.1*matched.patients.undup$matched.p.0
-  t.min1 <- matched.patients.undup$matched.p.1*(1-matched.patients.undup$matched.p.0)
+  t.1 <- (1-matched.patients$matched.p.1)*matched.patients$matched.p.0
+  t.0 <- (1-matched.patients$matched.p.1)*(1-matched.patients$matched.p.0) + matched.patients$matched.p.1*matched.patients$matched.p.0
+  t.min1 <- matched.patients$matched.p.1*(1-matched.patients$matched.p.0)
 
-  I.1 <- matched.patients.undup$matched.tau.obs==1
-  I.0 <- matched.patients.undup$matched.tau.obs==0
-  I.min1 <- matched.patients.undup$matched.tau.obs==-1
+  I.1 <- matched.patients$matched.tau.obs==1
+  I.0 <- matched.patients$matched.tau.obs==0
+  I.min1 <- matched.patients$matched.tau.obs==-1
 
   # Brier score for benefit
-  n.p <- nrow(matched.patients.undup)
+  n.p <- nrow(matched.patients)
   Brier.for.Benefit <- (sum((t.1-I.1)^2)
                         +sum((t.0-I.0)^2)
                         +sum((t.min1-I.min1)^2))/(2*n.p)
@@ -187,11 +182,11 @@ OP.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
     # bootstrap matched patient pairs
     for (B in 1:nr.bootstraps){
       # obtain all subclass IDs
-      subclass.IDs <- sort(unique(matched.patients.undup$subclass))
+      subclass.IDs <- sort(unique(matched.patients$subclass))
       # sample randomly from subclass IDs
       sample.subclass <- sample(subclass.IDs, length(subclass.IDs), replace=TRUE)
       # data frame of duplicated patients
-      matched.patients.dup <- dplyr::slice(matched.patients.undup, sample.subclass)
+      matched.patients.dup <- dplyr::slice(matched.patients, sample.subclass)
 
       # set up quantities
       t.1.B <- (1-matched.patients.dup$matched.p.1)*matched.patients.dup$matched.p.0

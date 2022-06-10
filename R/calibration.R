@@ -98,7 +98,7 @@
 #'                               CI=FALSE, nr.bootstraps=50, message=TRUE,
 #'                               measure="nearest", distance="mahalanobis",
 #'                               estimand=NULL, replace=FALSE)
-#' EB.out <- E.for.Benefit(matched.patients=out.matched$df.matched.patients,
+#' EB.out <- E.for.Benefit(matched.patients=out.matched$df.matched.pairs,
 #'                         CI=TRUE, nr.bootstraps=100, message=TRUE, replace=FALSE)
 #' EB.out
 E.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
@@ -153,27 +153,22 @@ E.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
     matched.patients <- match.patients(Y=Y, W=W, X=X,
                                        p.0=p.0, p.1=p.1, tau.hat=tau.hat,
                                        measure=measure, distance=distance,
-                                       estimand=estimand, replace=replace, ...)$df.matched.patients
+                                       estimand=estimand, replace=replace, ...)$df.matched.pairs
   }
   else{
     # use the dataframe provided by the user
     stopifnot("matched.patients must be a dataframe" = is.data.frame(matched.patients))
   }
 
-  # set up df to calculate OP
-  matched.patients.undup <- matched.patients[, c("subclass", "matched.tau.obs", "matched.p.0", "matched.p.1", "matched.tau.hat")]
-  # remove duplicates from matched.patients data frame
-  matched.patients.undup <- matched.patients.undup[rep(c(TRUE, FALSE), nrow(matched.patients.undup)/2),]
-
   # perform smoothing on matched patient pairs
   loess.calibrate <- stats::loess(matched.tau.obs ~ matched.tau.hat,
-                                  data=matched.patients.undup)
-  matched.patients.undup$tau.smoothed <- predict(loess.calibrate)
+                                  data=matched.patients)
+  matched.patients$tau.smoothed <- predict(loess.calibrate)
 
   # calculate calibration metrics
-  Eavg.for.benefit <- mean(abs(matched.patients.undup$tau.smoothed - matched.patients.undup$matched.tau.hat))
-  E50.for.benefit <- stats::median(abs(matched.patients.undup$tau.smoothed - matched.patients.undup$matched.tau.hat))
-  E90.for.benefit <- as.numeric(stats::quantile(abs(matched.patients.undup$tau.smoothed - matched.patients.undup$matched.tau.hat), probs=0.9))
+  Eavg.for.benefit <- mean(abs(matched.patients$tau.smoothed - matched.patients$matched.tau.hat))
+  E50.for.benefit <- stats::median(abs(matched.patients$tau.smoothed - matched.patients$matched.tau.hat))
+  E90.for.benefit <- as.numeric(stats::quantile(abs(matched.patients$tau.smoothed - matched.patients$matched.tau.hat), probs=0.9))
 
   if (CI){
     if (message){
@@ -185,11 +180,11 @@ E.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
     # bootstrap matched patient pairs
     for (B in 1:nr.bootstraps){
       # obtain all subclass IDs
-      subclass.IDs <- sort(unique(matched.patients.undup$subclass))
+      subclass.IDs <- sort(unique(matched.patients$subclass))
       # sample randomly from subclass IDs
       sample.subclass <- sample(subclass.IDs, length(subclass.IDs), replace=TRUE)
       # data frame of duplicated patients
-      matched.patients.dup <- dplyr::slice(matched.patients.undup, sample.subclass)
+      matched.patients.dup <- dplyr::slice(matched.patients, sample.subclass)
 
       # perform smoothing on matched patient pairs
       loess.calibrate.B <- stats::loess(matched.tau.obs ~ matched.tau.hat,
