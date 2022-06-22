@@ -51,4 +51,4 @@ This function combines multiple estimates with multiples standard errors using t
 
 van Klaveren D, Steyerberg EW, Serruys PW, Kent DM. The proposed 'concordance-statistic for benefit' provided a useful metric when modeling heterogeneous treatment effects. J Clin Epidemiol. 2018 Feb;94:59-68. doi: 10.1016/j.jclinepi.2017.10.021. Epub 2017 Nov 11. PMID: 29132832; PMCID: PMC7448760.
 
-Maas C.C.H.M., van Klaveren D. Performance metrics for models predicting individualized treatment effect of patients. 2022. Not published yet (MedRxiv)
+Maas C.C.H.M., van Klaveren D. Performance metrics for models designed to predict individualized treatment effect. 2022. Preprint on MedRxiv can be found here https://www.medrxiv.org/content/10.1101/2022.06.14.22276387v1
