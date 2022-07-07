@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_calibration.R
 \name{calibration.plot}
 \alias{calibration.plot}
-\title{E-for-benefit}
+\title{Calibration plot}
 \usage{
 calibration.plot(
   matched.patients = NULL,
@@ -33,7 +33,7 @@ a dataframe containing the matched patients.
 
 build.plot
 
-ggplo2 object of the plot.
+ggplot2 object of the plot.
 
 
 quantiles
@@ -65,6 +65,8 @@ EB.out <- E.for.Benefit(Y=Y, W=W, X=X, p.0=p.0, p.1=p.1, tau.hat=tau.hat,
                         measure="nearest", distance="mahalanobis",
                         estimand=NULL, replace=FALSE)
 g <- 5
-calibration.plot(matched.patients=EB.out$matched.patients, g=g,
+CP <- calibration.plot(matched.patients=EB.out$matched.patients, g=g,
                  plot.CI=TRUE, show=TRUE)
+# Edit the calibration plot using ggplot, i.e.
+CP$build.plot <- CP$build.plot+ggplot2::scale_x_continuous(limits=c(-1, 1))
 }
