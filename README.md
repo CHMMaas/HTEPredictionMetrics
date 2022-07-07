@@ -7,6 +7,8 @@ library(remotes)
 
 remotes::install_github("CHMMaas/HTEPredictionMetrics")
 
+Note, if you want to update the package you can also use the above call.
+
 # Load
 
 library(HTEPredictionMetrics)
