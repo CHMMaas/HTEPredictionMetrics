@@ -61,17 +61,17 @@ matched.patients
 a dataframe containing the matched patients.
 
 
-Log.Loss.for.Benefit
+Cross.Entropy.for.Benefit
 
 the resulting logistic-loss-for-Benefit value.
 
 
-Log.Loss.lower.CI
+Cross.Entropy.lower.CI
 
 the lower bound of the confidence interval of the logistic-loss-for-Benefit (if CI = TRUE).
 
 
-Log.Loss.upper.CI
+Cross.Entropy.upper.CI
 
 the upper bound of the confidence interval of the logistic-loss-for-Benefit (if CI = TRUE).
 

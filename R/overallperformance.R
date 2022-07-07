@@ -31,17 +31,17 @@
 #' a dataframe containing the matched patients.
 #'
 #'
-#' Log.Loss.for.Benefit
+#' Cross.Entropy.for.Benefit
 #'
 #' the resulting logistic-loss-for-Benefit value.
 #'
 #'
-#' Log.Loss.lower.CI
+#' Cross.Entropy.lower.CI
 #'
 #' the lower bound of the confidence interval of the logistic-loss-for-Benefit (if CI = TRUE).
 #'
 #'
-#' Log.Loss.upper.CI
+#' Cross.Entropy.upper.CI
 #'
 #' the upper bound of the confidence interval of the logistic-loss-for-Benefit (if CI = TRUE).
 #'
@@ -167,17 +167,17 @@ OP.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
   omit <- which(t.1<0 | t.0<0 | t.min1<0)
   if (length(omit)>0 & message){
     cat('nr. omitted observations for log loss:', length(omit), '\n')
-    Log.Loss.for.Benefit <- -(sum(I.1[-omit]*log(t.1[-omit]))+sum(I.0[-omit]*log(t.0[-omit]))+sum(I.min1[-omit]*log(t.min1[-omit])))/n.p
+    Cross.Entropy.for.Benefit <- -(sum(I.1[-omit]*log(t.1[-omit]))+sum(I.0[-omit]*log(t.0[-omit]))+sum(I.min1[-omit]*log(t.min1[-omit])))/n.p
   }
   else{
-    Log.Loss.for.Benefit <- -(sum(I.1*log(t.1))+sum(I.0*log(t.0))+sum(I.min1*log(t.min1)))/n.p
+    Cross.Entropy.for.Benefit <- -(sum(I.1*log(t.1))+sum(I.0*log(t.0))+sum(I.min1*log(t.min1)))/n.p
   }
 
   if (CI){
     if (message){
       cat('Calculating confidence interval... Taking too long? Lower the number of bootstraps. \n')
     }
-    Log.Loss.for.CI <- c()
+    Cross.Entropy.for.CI <- c()
     Brier.for.CI <- c()
     # bootstrap matched patient pairs
     for (B in 1:nr.bootstraps){
@@ -206,36 +206,36 @@ OP.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
       omit.B <- which(t.1.B<0 | t.0.B<0 | t.min1.B<0)
       if (length(omit.B)>0 & message){
         cat('nr. omitted observations for log loss:', length(omit.B), '\n')
-        Log.Loss.for.Benefit.B <- -(sum(I.1.B[-omit.B]*log(t.1.B[-omit.B]))
+        Cross.Entropy.for.Benefit.B <- -(sum(I.1.B[-omit.B]*log(t.1.B[-omit.B]))
                                     +sum(I.0.B[-omit.B]*log(t.0.B[-omit.B]))
                                     +sum(I.min1.B[-omit.B]*log(t.min1[-omit.B])))/n.p
       }
       else{
-        Log.Loss.for.Benefit.B <- -(sum(I.1.B*log(t.1.B))
+        Cross.Entropy.for.Benefit.B <- -(sum(I.1.B*log(t.1.B))
                                   +sum(I.0.B*log(t.0.B))
                                   +sum(I.min1.B*log(t.min1.B)))/n.p
       }
 
       # calculate calibration metrics
-      Log.Loss.for.CI <- c(Log.Loss.for.CI, Log.Loss.for.Benefit.B)
+      Cross.Entropy.for.CI <- c(Cross.Entropy.for.CI, Cross.Entropy.for.Benefit.B)
       Brier.for.CI <- c(Brier.for.CI, Brier.for.Benefit.B)
     }
-    Log.Loss.lower.CI <- as.numeric(stats::quantile(Log.Loss.for.CI, 0.025))
-    Log.Loss.upper.CI <- as.numeric(stats::quantile(Log.Loss.for.CI, 0.975))
+    Cross.Entropy.lower.CI <- as.numeric(stats::quantile(Cross.Entropy.for.CI, 0.025))
+    Cross.Entropy.upper.CI <- as.numeric(stats::quantile(Cross.Entropy.for.CI, 0.975))
     Brier.lower.CI <- as.numeric(stats::quantile(Brier.for.CI, 0.025))
     Brier.upper.CI <- as.numeric(stats::quantile(Brier.for.CI, 0.975))
   }
   else{
-    Log.Loss.lower.CI <- NA
-    Log.Loss.upper.CI <- NA
+    Cross.Entropy.lower.CI <- NA
+    Cross.Entropy.upper.CI <- NA
     Brier.lower.CI <- NA
     Brier.upper.CI <- NA
   }
 
   return(list(matched.patients=matched.patients,
-              Log.Loss.for.Benefit=Log.Loss.for.Benefit,
-              Log.Loss.lower.CI=Log.Loss.lower.CI,
-              Log.Loss.upper.CI=Log.Loss.upper.CI,
+              Cross.Entropy.for.Benefit=Cross.Entropy.for.Benefit,
+              Cross.Entropy.lower.CI=Cross.Entropy.lower.CI,
+              Cross.Entropy.upper.CI=Cross.Entropy.upper.CI,
               Brier.for.Benefit=Brier.for.Benefit,
               Brier.lower.CI=Brier.lower.CI,
               Brier.upper.CI=Brier.upper.CI))
