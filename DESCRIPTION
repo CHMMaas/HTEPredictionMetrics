@@ -17,6 +17,6 @@ Imports:
     MatchIt (>= 4.3.4),
     methods (>= 4.1.0),
     rms (>= 6.2.0),
-    stats (>= 4.1.0),
+    stats (>= 4.0.3),
     survival (>= 3.2.11),
     utils (>= 4.1.0)
