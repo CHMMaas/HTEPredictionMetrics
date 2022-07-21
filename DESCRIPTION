@@ -14,7 +14,7 @@ Imports:
     ggplot2 (>= 3.3.6),
     grDevices (>= 4.1.0),
     Hmisc (>= 4.7.0),
-    MatchIt (>= 4.4.0),
+    MatchIt (>= 4.3.4),
     methods (>= 4.1.0),
     rms (>= 6.3.0),
     stats (>= 4.1.0),
