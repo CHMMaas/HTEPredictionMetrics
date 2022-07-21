@@ -9,6 +9,8 @@ remotes::install_github("CHMMaas/HTEPredictionMetrics")
 
 Note, if you want to update the package you can also use the above call.
 
+If you receive the error: 'installation of package ‘~/HTEPredictionMetrics_1.0.0.tar.gz’ had non-zero exit status', please first install the necessary packages that HTEPredictionMetrics depends on.
+
 # Load
 
 library(HTEPredictionMetrics)
