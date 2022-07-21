@@ -48,6 +48,7 @@ df.matched.patients
 
 a dataframe containing the matched patients, thus each individual is included in this dataframe
 
+
 df.matched.pairs
 
 a dataframe containing only the matched pairs, and not the individuals
