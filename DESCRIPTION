@@ -10,13 +10,13 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
 Imports: 
-    dplyr (>= 1.0.3),
-    ggplot2 (>= 3.3.5),
-    grDevices (>= 4.1.0),
-    Hmisc (>= 4.7.0),
-    MatchIt (>= 4.3.4),
-    methods (>= 4.1.0),
-    rms (>= 6.2.0),
-    stats (>= 4.0.3),
-    survival (>= 3.2.11),
-    utils (>= 4.1.0)
+    dplyr,
+    ggplot2,
+    grDevices,
+    Hmisc,
+    MatchIt,
+    methods,
+    rms,
+    stats,
+    survival,
+    utils
