@@ -115,19 +115,19 @@ E.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
 
   if (is.null(matched.patients)){
     # check user input
-    stopifnot("W must be a vector" = is.vector(W))
-    stopifnot("W must only consists of zeros and ones" = !sum(sort(unique(W))-c(0, 1)))
-    stopifnot("X must be a vector or matrix" = is.matrix(X) | is.vector(X))
-    stopifnot("p.0 must be a vector" = is.vector(p.0))
-    stopifnot("p.1 must be a vector" = is.vector(p.1))
-    stopifnot("tau.hat must be a vector" = is.vector(tau.hat))
-
     stopifnot("Y must be numeric" = is.numeric(Y))
     stopifnot("W must be numeric" = is.numeric(W))
     stopifnot("X must be numeric" = is.numeric(X))
     stopifnot("p.0 must be numeric" = is.numeric(p.0))
     stopifnot("p.1 must be numeric" = is.numeric(p.1))
     stopifnot("tau.hat must be numeric" = is.numeric(tau.hat))
+
+    stopifnot("W must be a vector" = is.vector(W))
+    stopifnot("W must only consists of zeros and ones" = !sum(sort(unique(W))-c(0, 1)))
+    stopifnot("X must be a vector or matrix" = is.matrix(X) | is.vector(X))
+    stopifnot("p.0 must be a vector" = is.vector(p.0))
+    stopifnot("p.1 must be a vector" = is.vector(p.1))
+    stopifnot("tau.hat must be a vector" = is.vector(tau.hat))
 
     stopifnot("Y and W must be the same length" = length(Y)==length(W))
     stopifnot("Y and X must have the same number of observations" = length(Y)==nrow(X))
