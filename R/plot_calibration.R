@@ -67,6 +67,7 @@
 #'                  plot.CI=TRUE, show=TRUE)
 #' # Edit the calibration plot using ggplot, i.e.
 #' CP$build.plot <- CP$build.plot+ggplot2::scale_x_continuous(limits=c(-1, 1))
+#' show(CP)
 calibration.plot <- function(matched.patients=NULL, g=5,
                              plot.CI=FALSE, show=TRUE, ...){
   # ensure correct data types
