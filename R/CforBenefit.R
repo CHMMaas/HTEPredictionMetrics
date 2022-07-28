@@ -27,14 +27,14 @@
 #' @param replace boolean; TRUE if matching with replacement, FALSE if matching without replacement
 #' @param ... additional arguments for matchit function from MatchIt package
 #'
-#' @return The output of the C.for.benefit function is a "list" with the following components.
+#' @return The output of the C.for.Benefit function is a "list" with the following components.
 #'
 #' matched.patients
 #'
 #' a dataframe containing the matched patients.
 #'
 #'
-#' c.for.benefit
+#' C.for.benefit
 #'
 #' the resulting C-for-benefit value.
 #'
@@ -136,7 +136,7 @@ C.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
 
   # calculate C-for-benefit
   cindex <- Hmisc::rcorr.cens(matched.patients$matched.tau.hat, matched.patients$matched.tau.obs)
-  c.for.benefit <- cindex["C Index"][[1]]
+  C.for.benefit <- cindex["C Index"][[1]]
   if (CI){
     if (message){
       cat('Calculating confidence interval... Taking too long? Lower the number of bootstraps. \n')
@@ -163,5 +163,5 @@ C.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
     upper.CI <- NA
   }
 
-  return(list(df.matched.patients=matched.patients, c.for.benefit=c.for.benefit, lower.CI=lower.CI, upper.CI=upper.CI))
+  return(list(df.matched.patients=matched.patients, C.for.benefit=C.for.benefit, lower.CI=lower.CI, upper.CI=upper.CI))
 }

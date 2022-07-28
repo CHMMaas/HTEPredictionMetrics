@@ -31,22 +31,22 @@
 #' a dataframe containing the matched patients.
 #'
 #'
-#' Cross.Entropy.for.Benefit
+#' Cross.entropy.for.benefit
 #'
 #' the resulting logistic-loss-for-Benefit value.
 #'
 #'
-#' Cross.Entropy.lower.CI
+#' Cross.entropy.lower.CI
 #'
 #' the lower bound of the confidence interval of the logistic-loss-for-Benefit (if CI = TRUE).
 #'
 #'
-#' Cross.Entropy.upper.CI
+#' Cross.entropy.upper.CI
 #'
 #' the upper bound of the confidence interval of the logistic-loss-for-Benefit (if CI = TRUE).
 #'
 #'
-#' Brier.for.Benefit
+#' Brier.for.benefit
 #'
 #' the resulting Brier-for-Benefit value.
 #'
@@ -158,7 +158,7 @@ OP.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
 
   # Brier score for benefit
   n.p <- nrow(matched.patients)
-  Brier.for.Benefit <- (sum((t.1-I.1)^2)
+  Brier.for.benefit <- (sum((t.1-I.1)^2)
                         +sum((t.0-I.0)^2)
                         +sum((t.min1-I.min1)^2))/(2*n.p)
 
@@ -166,10 +166,10 @@ OP.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
   omit <- which(t.1<0 | t.0<0 | t.min1<0)
   if (length(omit)>0 & message){
     cat('nr. omitted observations for log loss:', length(omit), '\n')
-    Cross.Entropy.for.Benefit <- -(sum(I.1[-omit]*log(t.1[-omit]))+sum(I.0[-omit]*log(t.0[-omit]))+sum(I.min1[-omit]*log(t.min1[-omit])))/n.p
+    Cross.entropy.for.benefit <- -(sum(I.1[-omit]*log(t.1[-omit]))+sum(I.0[-omit]*log(t.0[-omit]))+sum(I.min1[-omit]*log(t.min1[-omit])))/n.p
   }
   else{
-    Cross.Entropy.for.Benefit <- -(sum(I.1*log(t.1))+sum(I.0*log(t.0))+sum(I.min1*log(t.min1)))/n.p
+    Cross.entropy.for.benefit <- -(sum(I.1*log(t.1))+sum(I.0*log(t.0))+sum(I.min1*log(t.min1)))/n.p
   }
 
   if (CI){
@@ -197,7 +197,7 @@ OP.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
       I.min1.B <- matched.patients.dup$matched.tau.obs==-1
 
       # Brier score for benefit
-      Brier.for.Benefit.B <- (sum((t.1.B-I.1.B)^2)
+      Brier.for.benefit.B <- (sum((t.1.B-I.1.B)^2)
                               +sum((t.0.B-I.0.B)^2)
                               +sum((t.min1.B-I.min1.B)^2))/(2*n.p)
 
@@ -205,37 +205,37 @@ OP.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
       omit.B <- which(t.1.B<0 | t.0.B<0 | t.min1.B<0)
       if (length(omit.B)>0 & message){
         cat('nr. omitted observations for log loss:', length(omit.B), '\n')
-        Cross.Entropy.for.Benefit.B <- -(sum(I.1.B[-omit.B]*log(t.1.B[-omit.B]))
+        Cross.entropy.for.benefit.B <- -(sum(I.1.B[-omit.B]*log(t.1.B[-omit.B]))
                                     +sum(I.0.B[-omit.B]*log(t.0.B[-omit.B]))
                                     +sum(I.min1.B[-omit.B]*log(t.min1[-omit.B])))/n.p
       }
       else{
-        Cross.Entropy.for.Benefit.B <- -(sum(I.1.B*log(t.1.B))
+        Cross.entropy.for.benefit.B <- -(sum(I.1.B*log(t.1.B))
                                   +sum(I.0.B*log(t.0.B))
                                   +sum(I.min1.B*log(t.min1.B)))/n.p
       }
 
       # calculate calibration metrics
-      Cross.Entropy.for.CI <- c(Cross.Entropy.for.CI, Cross.Entropy.for.Benefit.B)
-      Brier.for.CI <- c(Brier.for.CI, Brier.for.Benefit.B)
+      Cross.Entropy.for.CI <- c(Cross.Entropy.for.CI, Cross.entropy.for.benefit.B)
+      Brier.for.CI <- c(Brier.for.CI, Brier.for.benefit.B)
     }
-    Cross.Entropy.lower.CI <- as.numeric(stats::quantile(Cross.Entropy.for.CI, 0.025))
-    Cross.Entropy.upper.CI <- as.numeric(stats::quantile(Cross.Entropy.for.CI, 0.975))
+    Cross.entropy.lower.CI <- as.numeric(stats::quantile(Cross.Entropy.for.CI, 0.025))
+    Cross.entropy.upper.CI <- as.numeric(stats::quantile(Cross.Entropy.for.CI, 0.975))
     Brier.lower.CI <- as.numeric(stats::quantile(Brier.for.CI, 0.025))
     Brier.upper.CI <- as.numeric(stats::quantile(Brier.for.CI, 0.975))
   }
   else{
-    Cross.Entropy.lower.CI <- NA
-    Cross.Entropy.upper.CI <- NA
+    Cross.entropy.lower.CI <- NA
+    Cross.entropy.upper.CI <- NA
     Brier.lower.CI <- NA
     Brier.upper.CI <- NA
   }
 
   return(list(matched.patients=matched.patients,
-              Cross.Entropy.for.Benefit=Cross.Entropy.for.Benefit,
-              Cross.Entropy.lower.CI=Cross.Entropy.lower.CI,
-              Cross.Entropy.upper.CI=Cross.Entropy.upper.CI,
-              Brier.for.Benefit=Brier.for.Benefit,
+              Cross.entropy.for.benefit=Cross.entropy.for.benefit,
+              Cross.entropy.lower.CI=Cross.entropy.lower.CI,
+              Cross.entropy.upper.CI=Cross.entropy.upper.CI,
+              Brier.for.benefit=Brier.for.benefit,
               Brier.lower.CI=Brier.lower.CI,
               Brier.upper.CI=Brier.upper.CI))
 }
