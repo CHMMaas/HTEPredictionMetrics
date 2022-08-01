@@ -1,14 +1,10 @@
-#' @title val_surv_mi
-#' @description This function calculates intercept, slope, and C-index for risk predictions of multiple imputed data set(s).
-#'
-#' @importFrom survival coxph
-#' @importFrom rms Predict
-#' @importFrom Hmisc rcorr.cens
+#' @title Rubin.combine
+#' @description This function combines estimates of multiple imputations.
 #'
 #' @param est vector of estimates
 #' @param se vector of standard errors
 #'
-#' @return The output of the val_surv_mi function is a "list" with the following components.
+#' @return The output of the Rubin.combine function is a "list" with the following components.
 #'
 #' est
 #'
