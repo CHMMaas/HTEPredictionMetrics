@@ -2,7 +2,7 @@
 % Please edit documentation in R/Rubin_combine.R
 \name{Rubin.combine}
 \alias{Rubin.combine}
-\title{val_surv_mi}
+\title{Rubin.combine}
 \usage{
 Rubin.combine(est, se)
 }
@@ -12,7 +12,7 @@ Rubin.combine(est, se)
 \item{se}{vector of standard errors}
 }
 \value{
-The output of the val_surv_mi function is a "list" with the following components.
+The output of the Rubin.combine function is a "list" with the following components.
 
 est
 
@@ -24,7 +24,7 @@ se
 Combined standard error
 }
 \description{
-This function calculates intercept, slope, and C-index for risk predictions of multiple imputed data set(s).
+This function combines estimates of multiple imputations.
 }
 \examples{
 library(HTEPredictionMetrics)

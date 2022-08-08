@@ -144,7 +144,8 @@ match.patients <- function(Y, W, X,
   # remove duplicates from matched.patients data frame
   matched.patients.undup <- matched.patients.undup[rep(c(TRUE, FALSE), nrow(matched.patients.undup)/2),]
 
-  return(list(df.matched.patients=matched.patients,
+  return(list(matched.out=matched,
+              df.matched.patients=matched.patients,
               df.matched.pairs=matched.patients.undup,
               discarded=discarded))
 }

@@ -54,14 +54,14 @@ C.for.Benefit(
 \item{...}{additional arguments for matchit function from MatchIt package}
 }
 \value{
-The output of the C.for.benefit function is a "list" with the following components.
+The output of the C.for.Benefit function is a "list" with the following components.
 
 matched.patients
 
 a dataframe containing the matched patients.
 
 
-c.for.benefit
+C.for.benefit
 
 the resulting C-for-benefit value.
 
