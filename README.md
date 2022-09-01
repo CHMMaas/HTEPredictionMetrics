@@ -11,6 +11,10 @@ Note, if you want to update the package you can also use the above call.
 
 If you receive the error: 'installation of package ‘~/HTEPredictionMetrics_1.0.0.tar.gz’ had non-zero exit status', please first install and update the necessary packages that HTEPredictionMetrics depends on.
 
+# Version
+
+Most up-to-date version: 1.0.0
+
 # Load
 
 library(HTEPredictionMetrics)
