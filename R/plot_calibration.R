@@ -104,7 +104,7 @@ calibration.plot <- function(matched.patients=NULL, g=5,
                                                 color="blue", size=1)+
                 ggplot2::geom_abline(intercept=0, linetype="dashed")+# 45-degree line
                 ggplot2::labs(x="Predicted treatment effect",
-                             y="Observed treatment effect", color=" ")   # axis names
+                             y="Observed pairwise treatment effect", color=" ")   # axis names
 
   # plot confidence interval
   if (plot.CI){
