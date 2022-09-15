@@ -1,6 +1,7 @@
 #' @title Calibration plot
-#' @description This function calculates E-for-benefit statistics.  Please note,
-#' this function is only applicable for binary outcomes.
+#' @description This function makes the calibration plot of matched pairs, i.e.
+#' the agreement between observed and predicted pairwise treatment effect.
+#' Please note, this function is only applicable for binary outcomes.
 #'
 #' @importFrom dplyr slice
 #' @importFrom stats quantile
