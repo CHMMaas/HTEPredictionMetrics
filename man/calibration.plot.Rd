@@ -13,7 +13,7 @@ calibration.plot(
 )
 }
 \arguments{
-\item{matched.patients}{dataframe; dataframe of matched patients, which contains a vector of predicted treatment effect (tau.hat), predicted treatment effect of matched patients (matched.tau.hat), and observed treatment effect (matched.tau.obs) of matched patients}
+\item{matched.patients}{dataframe; dataframe of matched patients, which contains predicted treatment effect of matched patients (matched.tau.hat) and observed treatment effect (matched.tau.obs) of matched patients}
 
 \item{g}{integer; indicating the number of groups in calibration plot}
 
@@ -59,6 +59,18 @@ X <- matrix(rnorm(n), n, 4)
 p.0 <- runif(n)
 p.1 <- runif(n)
 tau.hat <- runif(n)
+
+# OPTION 1
+matched.patients <- match.patients(Y=Y, W=W, X=X,
+                                   p.0=p.0, p.1=p.1, tau.hat=tau.hat,
+                                   CI=FALSE, nr.bootstraps=50, message=TRUE,
+                                   measure="nearest", distance="mahalanobis",
+                                   estimand=NULL, replace=FALSE)
+g <- 5
+CP <- calibration.plot(matched.patients=matched.patients$df.matched.patients, g=g,
+                 plot.CI=TRUE, show=TRUE)
+
+# OPTION 2
 EB.out <- E.for.Benefit(Y=Y, W=W, X=X, p.0=p.0, p.1=p.1, tau.hat=tau.hat,
                         CI=TRUE, nr.bootstraps=100, message=TRUE,
                         matched.patients=NULL,
@@ -67,7 +79,8 @@ EB.out <- E.for.Benefit(Y=Y, W=W, X=X, p.0=p.0, p.1=p.1, tau.hat=tau.hat,
 g <- 5
 CP <- calibration.plot(matched.patients=EB.out$matched.patients, g=g,
                  plot.CI=TRUE, show=TRUE)
-# Edit the calibration plot using ggplot, i.e.
+
+# EDIT THE CALIBRATION PLOT USING GGPLOT
 CP$build.plot <- CP$build.plot+ggplot2::scale_x_continuous(limits=c(-1, 1))
 show(CP)
 }

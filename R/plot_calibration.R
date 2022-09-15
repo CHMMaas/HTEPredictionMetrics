@@ -57,6 +57,18 @@
 #' p.0 <- runif(n)
 #' p.1 <- runif(n)
 #' tau.hat <- runif(n)
+#'
+#' # OPTION 1
+#' matched.patients <- match.patients(Y=Y, W=W, X=X,
+#'                                    p.0=p.0, p.1=p.1, tau.hat=tau.hat,
+#'                                    CI=FALSE, nr.bootstraps=50, message=TRUE,
+#'                                    measure="nearest", distance="mahalanobis",
+#'                                    estimand=NULL, replace=FALSE)
+#' g <- 5
+#' CP <- calibration.plot(matched.patients=matched.patients$df.matched.patients, g=g,
+#'                  plot.CI=TRUE, show=TRUE)
+#'
+#' # OPTION 2
 #' EB.out <- E.for.Benefit(Y=Y, W=W, X=X, p.0=p.0, p.1=p.1, tau.hat=tau.hat,
 #'                         CI=TRUE, nr.bootstraps=100, message=TRUE,
 #'                         matched.patients=NULL,
@@ -65,14 +77,15 @@
 #' g <- 5
 #' CP <- calibration.plot(matched.patients=EB.out$matched.patients, g=g,
 #'                  plot.CI=TRUE, show=TRUE)
-#' # Edit the calibration plot using ggplot, i.e.
+#'
+#' # EDIT THE CALIBRATION PLOT USING GGPLOT
 #' CP$build.plot <- CP$build.plot+ggplot2::scale_x_continuous(limits=c(-1, 1))
 #' show(CP)
 calibration.plot <- function(matched.patients=NULL, g=5,
                              plot.CI=FALSE, show=TRUE, ...){
   # ensure correct data types
   stopifnot("matched.patients must be a dataframe" = is.data.frame(matched.patients))
-  stopifnot("CI must be a boolean (TRUE or FALSE)" = isTRUE(plot.CI)|isFALSE(plot.CI))
+  stopifnot("plot.CI must be a boolean (TRUE or FALSE)" = isTRUE(plot.CI)|isFALSE(plot.CI))
 
   # compute the smoothed calibration curve if it is not in the matched.patient dataframe
   if (is.null(matched.patients$tau.smoothed) | plot.CI){
@@ -92,9 +105,11 @@ calibration.plot <- function(matched.patients=NULL, g=5,
   }
 
   # omit 2.5% and 97.5% quantiles
-  # quantiles <- as.numeric(quantile(matched.patients$matched.tau.hat, c(0.025, 0.975)))
-  # included.rows <- which(matched.patients$matched.tau.hat > quantiles[1] & matched.patients$matched.tau.hat < quantiles[2])
-  # matched.patients <- matched.patients[included.rows, ]
+  # if(drop.extremes){
+  #   quantiles <- as.numeric(quantile(matched.patients$matched.tau.hat, c(0.025, 0.975)))
+  #   included.rows <- which(matched.patients$matched.tau.hat > quantiles[1] & matched.patients$matched.tau.hat < quantiles[2])
+  #   matched.patients <- matched.patients[included.rows, ]
+  # }
 
   # create plot
   build.plot <- ggplot2::ggplot(data=matched.patients, ggplot2::aes(x= .data$matched.tau.hat),
@@ -103,7 +118,7 @@ calibration.plot <- function(matched.patients=NULL, g=5,
                 ggplot2::geom_line(ggplot2::aes(y= .data$tau.smoothed), # plot LOESS line
                                                 color="blue", size=1)+
                 ggplot2::geom_abline(intercept=0, linetype="dashed")+# 45-degree line
-                ggplot2::labs(x="Predicted treatment effect",
+                ggplot2::labs(x="Predicted pairwise treatment effect",
                              y="Observed pairwise treatment effect", color=" ")   # axis names
 
   # plot confidence interval
@@ -113,11 +128,15 @@ calibration.plot <- function(matched.patients=NULL, g=5,
     build.plot <- build.plot+ggplot2::geom_ribbon(ggplot2::aes(ymin=y.min, ymax=y.max), alpha=0.2)
   }
 
-  # plot quantiles
+  # define the edges of the quantiles
   quantiles <- c(min(matched.patients$matched.tau.hat)-0.01,
                  as.numeric(quantile(matched.patients$matched.tau.hat, (1:(g-1)/g))),
                  max(matched.patients$matched.tau.hat))
+
+  # sort dataframe on tau.hat
   ordered.df <- matched.patients[order(matched.patients$matched.tau.hat), ]
+
+  # split the ordered dataframe in g groups by creating quantile.nr
   ordered.df$quantile.nr <- cut(ordered.df$matched.tau.hat, breaks=quantiles, labels=FALSE)
 
   # x-axis value is mean of matched treatment effect in the quantiles
@@ -129,13 +148,17 @@ calibration.plot <- function(matched.patients=NULL, g=5,
   # determine standard deviation in group
   sd <- aggregate(ordered.df, list(ordered.df$quantile.nr), sd)$matched.tau.obs
 
-  # determine confidence interval
+  # calculate the number of observations in each quantile
   n <- rep(NA, g)
   for (q.nr in 1:g){
     # n is the number of pairs in each group
     n[q.nr] <- nrow(unique(ordered.df[ordered.df$quantile.nr==q.nr,]))
   }
+
+  # calculate the standard deviation in each group
   sd <- sqrt(sd^2/n)
+
+  # determine confidence interval
   y.lower <- y.of.quant-1.96*sd
   y.upper <- y.of.quant+1.96*sd
 
