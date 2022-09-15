@@ -19,7 +19,7 @@
 #' @importFrom ggplot2 scale_x_continuous
 #' @importFrom ggplot2 .data
 #'
-#' @param matched.patients dataframe; dataframe of matched patients, which contains a vector of predicted treatment effect (tau.hat), predicted treatment effect of matched patients (matched.tau.hat), and observed treatment effect (matched.tau.obs) of matched patients
+#' @param matched.patients dataframe; dataframe of matched patients, which contains predicted treatment effect of matched patients (matched.tau.hat) and observed treatment effect (matched.tau.obs) of matched patients
 #' @param g integer; indicating the number of groups in calibration plot
 #' @param plot.CI boolean; TRUE if you want to plot the confidence interval of the calibration plot of predicted versus observed treatment effect of matched patients
 #' @param show boolean; TRUE if you want to show the plot; FALSE if not
@@ -133,7 +133,7 @@ calibration.plot <- function(matched.patients=NULL, g=5,
   n <- rep(NA, g)
   for (q.nr in 1:g){
     # n is the number of pairs in each group
-    n[q.nr] <- length(unique(ordered.df[ordered.df$quantile.nr==q.nr, "subclass"]))
+    n[q.nr] <- nrow(unique(ordered.df[ordered.df$quantile.nr==q.nr,]))
   }
   sd <- sqrt(sd^2/n)
   y.lower <- y.of.quant-1.96*sd
