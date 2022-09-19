@@ -58,6 +58,7 @@
 #' p.0 <- runif(n)
 #' p.1 <- runif(n)
 #' tau.hat <- runif(n)
+#' g <- 5 # number of groups in calibration plot
 #'
 #' # OPTION 1
 #' matched.patients <- match.patients(Y=Y, W=W, X=X,
@@ -65,7 +66,6 @@
 #'                                    CI=FALSE, nr.bootstraps=50, message=TRUE,
 #'                                    measure="nearest", distance="mahalanobis",
 #'                                    estimand=NULL, replace=FALSE)
-#' g <- 5
 #' CP <- calibration.plot(matched.patients=matched.patients$df.matched.patients, g=g,
 #'                  plot.CI=TRUE, show=TRUE)
 #'
@@ -75,7 +75,6 @@
 #'                         matched.patients=NULL,
 #'                         measure="nearest", distance="mahalanobis",
 #'                         estimand=NULL, replace=FALSE)
-#' g <- 5
 #' CP <- calibration.plot(matched.patients=EB.out$matched.patients, g=g,
 #'                  plot.CI=TRUE, show=TRUE)
 #'
