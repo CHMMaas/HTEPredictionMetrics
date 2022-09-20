@@ -1,5 +1,10 @@
 # HTEPredictionMetrics package
-This package includes various metrics that can be used to evaluate heterogeneous treatment effect predictions. Please note we assumed the outcome to be unfavourable, such that treatment benefit is indicated when the probability of the outcome for the untreated patient is larger than that of the treated patient. If you have a favourable outcome (Y), please use 1-Y.
+This package includes various metrics that can be used to evaluate heterogeneous treatment effect predictions. We defined treatment effect as the difference in the outcome probability of the untreated patient minus the outcome probability of the treated patient. Please note we assumed the outcome to be unfavourable, such that treatment benefit is indicated when the outcome probability for the untreated patient is larger than that of the treated patient. If you have a favourable outcome (Y), please use 1-Y.
+
+# Version
+
+This package is under development.
+Most up-to-date version: 1.0.0
 
 # Install 
 
@@ -10,10 +15,6 @@ remotes::install_github("CHMMaas/HTEPredictionMetrics")
 Note, if you want to update the package you can also use the above call. If this doesn't work, use remove the package using remove.packages('HTEPredictionMetrics') and reopen R and run the above call.
 
 If you receive the error: 'installation of package ‘~/HTEPredictionMetrics_1.0.0.tar.gz’ had non-zero exit status', please first install and update the necessary packages that HTEPredictionMetrics depends on.
-
-# Version
-
-Most up-to-date version: 1.0.0
 
 # Load
 
