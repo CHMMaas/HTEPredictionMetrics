@@ -19,7 +19,7 @@ match.patients(
 )
 }
 \arguments{
-\item{Y}{a vector of binary outcomes; 1 if an event; 0 if not}
+\item{Y}{a vector of binary outcomes; 1 if an (unfavourable) event; 0 if not}
 
 \item{W}{a vector of treatment assignment; 1 for active treatment; 0 for control}
 
