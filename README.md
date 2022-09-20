@@ -7,7 +7,7 @@ library(remotes)
 
 remotes::install_github("CHMMaas/HTEPredictionMetrics")
 
-Note, if you want to update the package you can also use the above call. If this doesn't work, use remove the package using remove.packages() and reopen R and run the above call.
+Note, if you want to update the package you can also use the above call. If this doesn't work, use remove the package using remove.packages('HTEPredictionMetrics') and reopen R and run the above call.
 
 If you receive the error: 'installation of package ‘~/HTEPredictionMetrics_1.0.0.tar.gz’ had non-zero exit status', please first install and update the necessary packages that HTEPredictionMetrics depends on.
 
