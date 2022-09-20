@@ -1,5 +1,5 @@
 # HTEPredictionMetrics package
-This package includes various metrics that can be used to evaluate heterogeneous treatment effect predictions.
+This package includes various metrics that can be used to evaluate heterogeneous treatment effect predictions. Please note we assumed the outcome to be unfavourable, such that treatment benefit is indicated when the probability of the outcome for the untreated patient is larger than that of the treated patient. If you have a favourable outcome, please use 1-Y.
 
 # Install 
 
