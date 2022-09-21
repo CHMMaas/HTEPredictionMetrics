@@ -1,6 +1,5 @@
 # HTEPredictionMetrics package
-This package includes various metrics that can be used to evaluate heterogeneous treatment effect predictions. We defined treatment effect as the difference in the outcome probability of the untreated patient minus the outcome probability of the treated patient. Please note we assumed the outcome to be unfavourable, such that treatment benefit is indicated when the outcome probability for the untreated patient is larger than that of the treated patient. If you have a favourable outcome (Y), please use 1-Y.
-
+This package includes various metrics that can be used to evaluate heterogeneous treatment effect predictions. We defined treatment effect as the difference in the outcome probability of the untreated patient minus the outcome probability of the treated patient. Please note we assumed the outcome to be unfavourable, such that treatment benefit is indicated when the outcome probability for the untreated patient is larger than that of the treated patient.
 # Version
 
 This package is under development.
