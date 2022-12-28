@@ -69,7 +69,7 @@
 #' # alternatively, use a dataframe of matched patients and calculate the C-for-Benefit
 #' out.matched <- match.patients(Y=Y, W=W, X=X,
 #'                               p.0=p.0, p.1=p.1, tau.hat=tau.hat,
-#'                               CI=FALSE, nr.bootstraps=50, message=TRUE,
+#'                               CI=FALSE, message=TRUE,
 #'                               measure="nearest", distance="mahalanobis",
 #'                               estimand=NULL, replace=FALSE)
 #' CB.out <- C.for.Benefit(matched.patients=out.matched$df.matched.pairs,
@@ -91,7 +91,7 @@ C.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
     # check user input
     stopifnot("Y must be numeric" = is.numeric(Y))
     stopifnot("W must be numeric" = is.numeric(W))
-    stopifnot("X must be numeric" = is.numeric(X))
+    stopifnot("X must be numeric" = is.numeric(as.matrix(X)))
     stopifnot("p.0 must be numeric" = is.numeric(p.0))
     stopifnot("p.1 must be numeric" = is.numeric(p.1))
     stopifnot("tau.hat must be numeric" = is.numeric(tau.hat))
