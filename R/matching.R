@@ -72,6 +72,7 @@ match.patients <- function(Y, W, X,
 
   stopifnot("W must be a vector" = is.vector(W))
   stopifnot("W must only consists of zeros and ones" = !sum(sort(unique(W))-c(0, 1)))
+  stopifnot("X must be a vector or matrix, use as.matrix(X) instead" = is.vector(X) | is.matri(X))
   stopifnot("p.0 must be a vector" = is.vector(p.0))
   stopifnot("p.1 must be a vector" = is.vector(p.1))
   stopifnot("tau.hat must be a vector" = is.vector(tau.hat))
