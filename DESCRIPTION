@@ -1,7 +1,7 @@
 Package: HTEPredictionMetrics
 Type: Package
 Title: Heterogeneous treatment effect prediction metrics
-Version: 1.0.0
+Version: 1.0.1
 Author: C.C.H.M. Maas
 Maintainer: Carolien Maas <c.h.m.maas@erasmusmc.nl>
 Description: This package includes metrics to assess the performance of models predicting individualized treatment effect.

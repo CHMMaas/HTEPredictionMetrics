@@ -65,7 +65,7 @@ g <- 5 # number of groups in calibration plot
 # OPTION 1
 matched.patients <- match.patients(Y=Y, W=W, X=X,
                                    p.0=p.0, p.1=p.1, tau.hat=tau.hat,
-                                   CI=FALSE, nr.bootstraps=50, message=TRUE,
+                                   CI=FALSE, message=TRUE,
                                    measure="nearest", distance="mahalanobis",
                                    estimand=NULL, replace=FALSE)
 CP <- calibration.plot(matched.patients=matched.patients$df.matched.patients, g=g,

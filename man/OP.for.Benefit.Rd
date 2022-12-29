@@ -115,7 +115,7 @@ OP.out
 # alternatively, use a dataframe of matched patients and calculate the overall performance metrics
 out.matched <- match.patients(Y=Y, W=W, X=X,
                               p.0=p.0, p.1=p.1, tau.hat=tau.hat,
-                              CI=FALSE, nr.bootstraps=50, message=TRUE,
+                              CI=FALSE, message=TRUE,
                               measure="nearest", distance="mahalanobis",
                               estimand=NULL, replace=FALSE)
 OP.out <- OP.for.Benefit(matched.patients=out.matched$df.matched.pairs,
