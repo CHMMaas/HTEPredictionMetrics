@@ -202,7 +202,7 @@ OP.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
                               +sum((t.min1.B-I.min1.B)^2))/(2*n.p)
 
       # Logistic loss for benefit
-      omit.B <- which(t.1.B<0 | t.0.B<0 | t.min1.B<0)
+      omit.B <- which(t.1.B<=0 | t.0.B<=0 | t.min1.B<=0)
       if (length(omit.B)>0 & message){
         cat('nr. omitted observations for log loss:', length(omit.B), '\n')
         Cross.entropy.for.benefit.B <- -(sum(I.1.B[-omit.B]*log(t.1.B[-omit.B]))
