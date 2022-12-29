@@ -163,9 +163,11 @@ OP.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
                         +sum((t.min1-I.min1)^2))/(2*n.p)
 
   # Logistic loss for benefit
-  omit <- which(t.1<=0 | t.0<=0 | t.min1<=0)
-  if (length(omit)>0 & message){
-    cat('nr. omitted observations for log loss:', length(omit), '\n')
+  omit <- which(t.1<0 | t.0<0 | t.min1<0)
+  if (length(omit)>0){
+    if (message){
+      cat('nr. omitted observations for log loss:', length(omit), '\n')
+    }
     Cross.entropy.for.benefit <- -(sum(I.1[-omit]*log(t.1[-omit]))+sum(I.0[-omit]*log(t.0[-omit]))+sum(I.min1[-omit]*log(t.min1[-omit])))/n.p
   }
   else{
@@ -202,9 +204,11 @@ OP.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
                               +sum((t.min1.B-I.min1.B)^2))/(2*n.p)
 
       # Logistic loss for benefit
-      omit.B <- which(t.1.B<=0 | t.0.B<=0 | t.min1.B<=0)
-      if (length(omit.B)>0 & message){
-        cat('nr. omitted observations for log loss:', length(omit.B), '\n')
+      omit.B <- which(t.1.B<0 | t.0.B<0 | t.min1.B<0)
+      if (length(omit.B)>0){
+        if (message){
+          cat('nr. omitted observations for log loss:', length(omit.B), '\n')
+        }
         Cross.entropy.for.benefit.B <- -(sum(I.1.B[-omit.B]*log(t.1.B[-omit.B]))
                                     +sum(I.0.B[-omit.B]*log(t.0.B[-omit.B]))
                                     +sum(I.min1.B[-omit.B]*log(t.min1[-omit.B])))/n.p
