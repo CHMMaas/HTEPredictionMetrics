@@ -115,11 +115,19 @@ match.patients <- function(Y, W, X,
   matched <- MatchIt::matchit(W ~ X, data=data.df,
                               method=measure, distance=distance,
                               estimand=estimand, replace=replace, ...)
-  matched.patients <- MatchIt::match.data(matched)
+
+  # get matches
+  if (replace){
+    matched.patients <- MatchIt::get_matches(matched)
+  } else{
+    matched.patients <- MatchIt::match.data(matched)
+  }
+
+  # subtract subclass
   matched.patients$subclass <- as.numeric(matched.patients$subclass)
 
   # patient IDs of those who weren't matched
-  discarded <- dplyr::setdiff(data.df$match.id, MatchIt::get_matches(matched, data=data.df)$id)
+  discarded <- dplyr::setdiff(data.df$match.id, MatchIt::get_matches(matched, data=data.df)$match.id)
 
   # sort on subclass and W
   matched.patients <- matched.patients[with(matched.patients, order(subclass, 1-W)), ]
