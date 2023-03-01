@@ -133,8 +133,9 @@ match.patients <- function(Y, W, X,
   matched.patients <- matched.patients[with(matched.patients, order(subclass, 1-W)), ]
 
   # matched observed treatment effect
-  observed.TE <- stats::aggregate(matched.patients, list(matched.patients$subclass), diff)$Y
-  matched.patients$matched.tau.obs <- rep(observed.TE, each=2)
+  matched.patients$matched.tau.obs <- stats::ave(matched.patients$Y,
+                                                  factor(matched.patients$subclass),
+                                                  FUN=function(x) c(diff(x), diff(x)))
 
   # matched p.0 = P[Y = 1| W = 0] so the probability of an outcome given no treatment of the untreated patient
   matched.p.0 <- (1-matched.patients$W)*matched.patients$p.0
