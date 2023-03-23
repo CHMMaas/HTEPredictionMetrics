@@ -67,7 +67,7 @@ matched.patients <- match.patients(Y=Y, W=W, X=X,
                                    p.0=p.0, p.1=p.1, tau.hat=tau.hat,
                                    CI=FALSE, message=TRUE,
                                    measure="nearest", distance="mahalanobis",
-                                   estimand=NULL, replace=FALSE)
+                                   estimand=NULL)
 CP <- calibration.plot(matched.patients=matched.patients$df.matched.patients, g=g,
                  plot.CI=TRUE, show=TRUE)
 
@@ -76,7 +76,7 @@ EB.out <- E.for.Benefit(Y=Y, W=W, X=X, p.0=p.0, p.1=p.1, tau.hat=tau.hat,
                         CI=TRUE, nr.bootstraps=100, message=TRUE,
                         matched.patients=NULL,
                         measure="nearest", distance="mahalanobis",
-                        estimand=NULL, replace=FALSE)
+                        estimand=NULL)
 CP <- calibration.plot(matched.patients=EB.out$matched.patients, g=g,
                  plot.CI=TRUE, show=TRUE)
 

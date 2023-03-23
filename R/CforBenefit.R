@@ -24,7 +24,6 @@
 #' @param measure measure option of matchit function from MatchIt package (default="nearest")
 #' @param distance distance option of matchit function from MatchIt package (default="mahalanobis)
 #' @param estimand default ATC meaning treated units are selected to be matched with control units
-#' @param replace boolean; TRUE if matching with replacement, FALSE if matching without replacement
 #' @param ... additional arguments for matchit function from MatchIt package
 #'
 #' @return The output of the C.for.Benefit function is a "list" with the following components.
@@ -63,7 +62,7 @@
 #'                         CI=TRUE, nr.bootstraps=100, message=TRUE,
 #'                         matched.patients=NULL,
 #'                         measure="nearest", distance="mahalanobis",
-#'                         estimand=NULL, replace=FALSE)
+#'                         estimand=NULL)
 #' CB.out
 #'
 #' # alternatively, use a dataframe of matched patients and calculate the C-for-Benefit
@@ -71,16 +70,16 @@
 #'                               p.0=p.0, p.1=p.1, tau.hat=tau.hat,
 #'                               CI=FALSE, message=TRUE,
 #'                               measure="nearest", distance="mahalanobis",
-#'                               estimand=NULL, replace=FALSE)
+#'                               estimand=NULL)
 #' CB.out <- C.for.Benefit(matched.patients=out.matched$df.matched.pairs,
-#'                         CI=TRUE, nr.bootstraps=100, message=TRUE, replace=FALSE)
+#'                         CI=TRUE, nr.bootstraps=100, message=TRUE)
 #' CB.out
 C.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
                           p.0=NULL, p.1=NULL, tau.hat=NULL,
                           matched.patients=NULL,
                           CI=FALSE, nr.bootstraps=50, message=TRUE,
                           measure="nearest", distance="mahalanobis",
-                          estimand=NULL, replace=FALSE, ...){
+                          estimand=NULL, ...){
   # check user input
   stopifnot("nr.bootstraps must be a scalar" = length(nr.bootstraps)==1)
   stopifnot("nr.bootstraps must be numeric" = is.numeric(nr.bootstraps))
@@ -127,7 +126,7 @@ C.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
     matched.patients <- match.patients(Y=Y, W=W, X=X,
                                        p.0=p.0, p.1=p.1, tau.hat=tau.hat,
                                        measure=measure, distance=distance,
-                                       estimand=estimand, replace=replace, ...)$df.matched.pairs
+                                       estimand=estimand, ...)$df.matched.pairs
   }
   else{
     # use the dataframe provided by the user

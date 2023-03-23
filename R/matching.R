@@ -20,7 +20,6 @@
 #' @param measure measure option of matchit function from MatchIt package (default="nearest")
 #' @param distance distance option of matchit function from MatchIt package (default="mahalanobis)
 #' @param estimand default NULL meaning that all patients in the smallest treatment arm get matched with one patient in other treatment arm; estimand can also be "ATT", "ATC" or "ATE", see Details of matchit function of MatchIt for more information
-#' @param replace boolean; TRUE if matching with replacement, FALSE if matching without replacement
 #' @param ... additional arguments for matchit function from MatchIt package
 #'
 #' @return The output of the match.patients function is
@@ -55,12 +54,12 @@
 #'                                    p.0=p.0, p.1=p.1, tau.hat=tau.hat,
 #'                                    CI=FALSE, message=TRUE,
 #'                                    measure="nearest", distance="mahalanobis",
-#'                                    estimand=NULL, replace=FALSE)
+#'                                    estimand=NULL)
 #' matched.patients
 match.patients <- function(Y, W, X,
                           p.0, p.1, tau.hat,
                           measure="nearest", distance="mahalanobis",
-                          estimand=NULL, replace=FALSE, ...){
+                          estimand=NULL, ...){
   # ensure correct data types
   stopifnot("Y must be numeric" = is.numeric(Y))
   stopifnot("W must be numeric" = is.numeric(W))
@@ -114,14 +113,10 @@ match.patients <- function(Y, W, X,
   }
   matched <- MatchIt::matchit(W ~ X, data=data.df,
                               method=measure, distance=distance,
-                              estimand=estimand, replace=replace, ...)
+                              estimand=estimand, replace=FALSE, ...)
 
   # get matches
-  if (replace){
-    matched.patients <- MatchIt::get_matches(matched)
-  } else{
-    matched.patients <- MatchIt::match.data(matched)
-  }
+  matched.patients <- MatchIt::match.data(matched)
 
   # subtract subclass
   matched.patients$subclass <- as.numeric(matched.patients$subclass)

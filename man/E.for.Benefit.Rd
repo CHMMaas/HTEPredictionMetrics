@@ -18,7 +18,6 @@ E.for.Benefit(
   measure = "nearest",
   distance = "mahalanobis",
   estimand = NULL,
-  replace = FALSE,
   ...
 )
 }
@@ -48,8 +47,6 @@ E.for.Benefit(
 \item{distance}{distance option of matchit function from MatchIt package (default="mahalanobis)}
 
 \item{estimand}{default ATC meaning treated units are selected to be matched with control units}
-
-\item{replace}{boolean; TRUE if matching with replacement, FALSE if matching without replacement}
 
 \item{...}{additional arguments for matchit function from MatchIt package}
 }
@@ -123,7 +120,7 @@ EB.out <- E.for.Benefit(Y=Y, W=W, X=X, p.0=p.0, p.1=p.1, tau.hat=tau.hat,
                         CI=TRUE, nr.bootstraps=100, message=TRUE,
                         matched.patients=NULL,
                         measure="nearest", distance="mahalanobis",
-                        estimand=NULL, replace=FALSE)
+                        estimand=NULL)
 EB.out
 
 # alternatively, use a dataframe of matched patients and calculate the C-for-Benefit
@@ -131,8 +128,8 @@ out.matched <- match.patients(Y=Y, W=W, X=X,
                               p.0=p.0, p.1=p.1, tau.hat=tau.hat,
                               CI=FALSE, message=TRUE,
                               measure="nearest", distance="mahalanobis",
-                              estimand=NULL, replace=FALSE)
+                              estimand=NULL)
 EB.out <- E.for.Benefit(matched.patients=out.matched$df.matched.pairs,
-                        CI=TRUE, nr.bootstraps=100, message=TRUE, replace=FALSE)
+                        CI=TRUE, nr.bootstraps=100, message=TRUE)
 EB.out
 }

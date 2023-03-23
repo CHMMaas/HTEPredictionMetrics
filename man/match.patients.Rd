@@ -14,7 +14,6 @@ match.patients(
   measure = "nearest",
   distance = "mahalanobis",
   estimand = NULL,
-  replace = FALSE,
   ...
 )
 }
@@ -36,8 +35,6 @@ match.patients(
 \item{distance}{distance option of matchit function from MatchIt package (default="mahalanobis)}
 
 \item{estimand}{default NULL meaning that all patients in the smallest treatment arm get matched with one patient in other treatment arm; estimand can also be "ATT", "ATC" or "ATE", see Details of matchit function of MatchIt for more information}
-
-\item{replace}{boolean; TRUE if matching with replacement, FALSE if matching without replacement}
 
 \item{...}{additional arguments for matchit function from MatchIt package}
 }
@@ -81,6 +78,6 @@ matched.patients <- match.patients(Y=Y, W=W, X=X,
                                    p.0=p.0, p.1=p.1, tau.hat=tau.hat,
                                    CI=FALSE, message=TRUE,
                                    measure="nearest", distance="mahalanobis",
-                                   estimand=NULL, replace=FALSE)
+                                   estimand=NULL)
 matched.patients
 }
