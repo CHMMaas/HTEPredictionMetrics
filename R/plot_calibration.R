@@ -105,11 +105,11 @@ calibration.plot <- function(matched.patients=NULL, g=5,
   }
 
   # omit 2.5% and 97.5% quantiles
-  # if(drop.extremes){
-  #   quantiles <- as.numeric(quantile(matched.patients$matched.tau.hat, c(0.025, 0.975)))
-  #   included.rows <- which(matched.patients$matched.tau.hat > quantiles[1] & matched.patients$matched.tau.hat < quantiles[2])
-  #   matched.patients <- matched.patients[included.rows, ]
-  # }
+  if(drop.extremes){
+    quantiles <- as.numeric(quantile(matched.patients$matched.tau.hat, c(0.025, 0.975)))
+    included.rows <- which(matched.patients$matched.tau.hat > quantiles[1] & matched.patients$matched.tau.hat < quantiles[2])
+    matched.patients <- matched.patients[included.rows, ]
+  }
 
   # create plot
   build.plot <- ggplot2::ggplot(data=matched.patients, ggplot2::aes(x= .data$matched.tau.hat),
