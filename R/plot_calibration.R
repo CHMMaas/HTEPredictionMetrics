@@ -105,9 +105,9 @@ calibration.plot <- function(matched.patients=NULL, g=5,
   }
 
   # omit 2.5% and 97.5% quantiles
-  quantiles <- as.numeric(quantile(matched.patients$matched.tau.hat, c(0.025, 0.975)))
-  included.rows <- which(matched.patients$matched.tau.hat > quantiles[1] & matched.patients$matched.tau.hat < quantiles[2])
-  matched.patients <- matched.patients[included.rows, ]
+  # quantiles <- as.numeric(quantile(matched.patients$matched.tau.hat, c(0.025, 0.975)))
+  # included.rows <- which(matched.patients$matched.tau.hat > quantiles[1] & matched.patients$matched.tau.hat < quantiles[2])
+  # matched.patients <- matched.patients[included.rows, ]
 
   # create plot
   build.plot <- ggplot2::ggplot(data=matched.patients, ggplot2::aes(x= .data$matched.tau.hat),
@@ -121,8 +121,8 @@ calibration.plot <- function(matched.patients=NULL, g=5,
 
   # plot confidence interval
   if (plot.CI){
-    y.min <- matched.patients$tau.smoothed-stats::qt(0.975, loess.result$df)*loess.result$se.fit #[included.rows]
-    y.max <- matched.patients$tau.smoothed+stats::qt(0.975, loess.result$df)*loess.result$se.fit #[included.rows]
+    y.min <- matched.patients$tau.smoothed-stats::qt(0.975, loess.result$df)*loess.result$se.fit[included.rows]
+    y.max <- matched.patients$tau.smoothed+stats::qt(0.975, loess.result$df)*loess.result$se.fit[included.rows]
     build.plot <- build.plot+ggplot2::geom_ribbon(ggplot2::aes(ymin=y.min,
                                                                ymax=y.max), alpha=0.2)
   }
