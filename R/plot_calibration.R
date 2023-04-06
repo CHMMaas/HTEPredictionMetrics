@@ -121,10 +121,11 @@ calibration.plot <- function(matched.patients=NULL, g=5,
 
   # plot confidence interval
   if (plot.CI){
-    y.min <- matched.patients$tau.smoothed-stats::qt(0.975, loess.result$df)*loess.result$se.fit[included.rows]
-    y.max <- matched.patients$tau.smoothed+stats::qt(0.975, loess.result$df)*loess.result$se.fit[included.rows]
+    y.min <- matched.patients$tau.smoothed-stats::qt(0.975, loess.result$df)*loess.result$se.fit #[included.rows]
+    y.max <- matched.patients$tau.smoothed+stats::qt(0.975, loess.result$df)*loess.result$se.fit #[included.rows]
     build.plot <- build.plot+ggplot2::geom_ribbon(ggplot2::aes(ymin=y.min,
-                                                               ymax=y.max), alpha=0.2)
+                                                               ymax=y.max),
+                                                  alpha=0.2)
   }
 
   # define the edges of the quantiles
