@@ -125,7 +125,8 @@ calibration.plot <- function(matched.patients=NULL, g=5,
   if (plot.CI){
     y.min <- matched.patients$tau.smoothed-stats::qt(0.975, loess.result$df)*loess.result$se.fit #[included.rows]
     y.max <- matched.patients$tau.smoothed+stats::qt(0.975, loess.result$df)*loess.result$se.fit #[included.rows]
-    build.plot <- build.plot+ggplot2::geom_ribbon(ggplot2::aes(ymin=y.min, ymax=y.max), alpha=0.2)
+    build.plot <- build.plot+ggplot2::geom_ribbon(ggplot2::aes(ymin=pmax(y.min, rep(-1, length(y.min))),
+                                                               ymax=pmin(y.max, rep(1, length(y.max)))), alpha=0.2)
   }
 
   # define the edges of the quantiles
@@ -165,7 +166,11 @@ calibration.plot <- function(matched.patients=NULL, g=5,
   # add quantiles to plot
   df.quantiles <- data.frame(x=x.of.quant, y.lower=y.lower, y.upper=y.upper)
   build.plot <- build.plot+ggplot2::geom_segment(data=df.quantiles,
-                                                 mapping=ggplot2::aes(x = x.of.quant, y = y.lower, xend = x.of.quant, yend = y.upper), size=1)+
+                                                 mapping=ggplot2::aes(x = x.of.quant,
+                                                                      y = y.lower,
+                                                                      xend = x.of.quant,
+                                                                      yend = y.upper),
+                                                 size=1)+
                             ggplot2::geom_point(data=df.quantiles,
                                                mapping=ggplot2::aes(x=x.of.quant, y=y.of.quant), size=2)
 
