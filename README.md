@@ -8,7 +8,7 @@ Most up-to-date version: 1.0.0
 
 # Package updates
 
-March 1, 2023 - Added functionality to match patients with replacement.
+April 17, release date version 1.0.0
 
 # Install 
 
