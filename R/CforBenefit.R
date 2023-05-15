@@ -13,7 +13,7 @@
 #'
 #' @param Y a vector of binary outcomes; 1 if an (unfavourable) event; 0 if not
 #' @param W a vector of treatment assignment; 1 for active treatment; 0 for control (or alternative treatment), note: make sure that W consists only of values of 0 and 1
-#' @param X a matrix of patient characteristics or individualized treatment effect predictions, do not include Y or W in this matrix
+#' @param X a matrix of patient characteristics or individualized treatment effect predictions, use as.matrix() if necessary, and do not include Y or W in this matrix
 #' @param p.0 a vector of outcome probabilities under control (or alternative treatment)
 #' @param p.1 a vector of outcome probabilities under active treatment
 #' @param tau.hat a vector of individualized treatment effect predictions
