@@ -26,7 +26,7 @@ OP.for.Benefit(
 
 \item{W}{a vector of treatment assignment; 1 for active treatment; 0 for control}
 
-\item{X}{a matrix of patient characteristics or individualized treatment effect predictions, do not include Y or W in this matrix}
+\item{X}{a matrix of patient characteristics or individualized treatment effect predictions, use as.matrix() if necessary, and do not include Y or W in this matrix}
 
 \item{p.0}{a vector of outcome probabilities under control}
 
