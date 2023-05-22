@@ -4,13 +4,13 @@ This package includes various metrics that can be used to evaluate heterogeneous
 # Version
 
 This package is under development.
-Most up-to-date version: 1.0.0
+Most up-to-date version: 1.0.1
 
 # Package updates
 
 April 17, release date version 1.0.0
 
-May 22, added functionality: X can also be of class "data.frame"
+May 22, version 1.0.1, added functionality: X can also be of class "data.frame"
 
 # Install 
 
