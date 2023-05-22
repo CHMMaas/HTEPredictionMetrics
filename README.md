@@ -9,6 +9,7 @@ Most up-to-date version: 1.0.0
 # Package updates
 
 April 17, release date version 1.0.0
+May 22, added functionality: X can also be of class "data.frame"
 
 # Install 
 
