@@ -60,6 +60,9 @@ match.patients <- function(Y, W, X,
                           p.0, p.1, tau.hat,
                           measure="nearest", distance="mahalanobis",
                           estimand=NULL, ...){
+  # convert X to data.matrix if it is a data.frame
+  if (class(X)[1] == "data.frame"){X <- data.matrix(X)}
+
   # ensure correct data types
   stopifnot("Y must be numeric" = is.numeric(Y))
   stopifnot("W must be numeric" = is.numeric(W))

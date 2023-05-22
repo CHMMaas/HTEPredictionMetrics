@@ -87,6 +87,9 @@ C.for.Benefit <- function(Y=NULL, W=NULL, X=NULL,
   stopifnot("message must be a boolean (TRUE or FALSE)" = isTRUE(message)|isFALSE(message))
 
   if (is.null(matched.patients)){
+    # convert X to data.matrix if it is a data.frame
+    if (class(X)[1] == "data.frame"){X <- data.matrix(X)}
+
     # check user input
     stopifnot("Y must be numeric" = is.numeric(Y))
     stopifnot("W must be numeric" = is.numeric(W))
