@@ -13,10 +13,11 @@
 #'
 #' @param Y a vector of binary outcomes; 1 if an (unfavourable) event; 0 if not
 #' @param W a vector of treatment assignment; 1 for active treatment; 0 for control
-#' @param X a matrix of patient characteristics or individualized treatment effect predictions, use as.matrix() if necessary, and do not include Y or W in this matrix
+#' @param X a matrix or data.frame of patient characteristics or individualized treatment effect predictions, categorical variables may be coded as.factor() to create dummy variables when matching, do not include Y or W in this matrix
 #' @param p.0 a vector of outcome probabilities under control
 #' @param p.1 a vector of outcome probabilities under active treatment
 #' @param tau.hat a vector of individualized treatment effect predictions
+#' @param print TRUE if the summary of matching needs to be printed
 #' @param measure measure option of matchit function from MatchIt package (default="nearest")
 #' @param distance distance option of matchit function from MatchIt package (default="mahalanobis)
 #' @param estimand default NULL meaning that all patients in the smallest treatment arm get matched with one patient in other treatment arm; estimand can also be "ATT", "ATC" or "ATE", see Details of matchit function of MatchIt for more information
@@ -46,27 +47,25 @@
 #' n <- 100
 #' Y <- sample(0:1, n, replace=TRUE)
 #' W <- sample(0:1, n, replace=TRUE)
-#' X <- matrix(rnorm(n), n, 3)
+#' X <- as.data.frame(matrix(rnorm(n), n, 3))
+#' colnames(X) <- c("varA", "varB", "varC")
+#' # categorical variable
+#' X$varD <- as.factor(sample(1:3, nrow(X), replace=TRUE))
 #' p.0 <- runif(n)
 #' p.1 <- runif(n)
 #' tau.hat <- runif(n)
 #' matched.patients <- match.patients(Y=Y, W=W, X=X,
 #'                                    p.0=p.0, p.1=p.1, tau.hat=tau.hat,
-#'                                    CI=FALSE, message=TRUE,
-#'                                    measure="nearest", distance="mahalanobis",
-#'                                    estimand=NULL)
+#'                                    print=TRUE, measure="nearest",
+#'                                    distance="mahalanobis", estimand=NULL)
 #' matched.patients
 match.patients <- function(Y, W, X,
-                          p.0, p.1, tau.hat,
+                          p.0, p.1, tau.hat, print=FALSE,
                           measure="nearest", distance="mahalanobis",
                           estimand=NULL, ...){
-  # convert X to data.matrix if it is a data.frame
-  if (class(X)[1] == "data.frame"){X <- data.matrix(X)}
-
   # ensure correct data types
   stopifnot("Y must be numeric" = is.numeric(Y))
   stopifnot("W must be numeric" = is.numeric(W))
-  stopifnot("X must be numeric" = is.numeric(as.matrix(X)))
   stopifnot("p.0 must be numeric" = is.numeric(p.0))
   stopifnot("p.1 must be numeric" = is.numeric(p.1))
   stopifnot("tau.hat must be numeric" = is.numeric(tau.hat))
@@ -74,7 +73,6 @@ match.patients <- function(Y, W, X,
 
   stopifnot("W must be a vector" = is.vector(W))
   stopifnot("W must only consists of zeros and ones" = !sum(sort(unique(W))-c(0, 1)))
-  stopifnot("X must be a vector or matrix, use as.matrix(X) instead" = is.vector(X) | is.matrix(X))
   stopifnot("p.0 must be a vector" = is.vector(p.0))
   stopifnot("p.1 must be a vector" = is.vector(p.1))
   stopifnot("tau.hat must be a vector" = is.vector(tau.hat))
@@ -114,9 +112,13 @@ match.patients <- function(Y, W, X,
       estimand <- "ATC"
     }
   }
-  matched <- MatchIt::matchit(W ~ X, data=data.df,
+  match.formula <- eval(parse(text=paste("W ~ ", paste(colnames(data.df)[grepl("^X.", colnames(data.df))], collapse=" + ", sep=""))))
+  matched <- MatchIt::matchit(match.formula, data=data.df,
                               method=measure, distance=distance,
                               estimand=estimand, replace=FALSE, ...)
+  if (print){
+    print(summary(matched))
+  }
 
   # get matches
   matched.patients <- MatchIt::match.data(matched)

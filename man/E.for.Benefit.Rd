@@ -26,7 +26,7 @@ E.for.Benefit(
 
 \item{W}{a vector of treatment assignment; 1 for active treatment; 0 for control}
 
-\item{X}{a matrix of patient characteristics or individualized treatment effect predictions, use as.matrix() if necessary, and do not include Y or W in this matrix}
+\item{X}{a matrix or data.frame of patient characteristics or individualized treatment effect predictions, categorical variables may be coded as.factor() to create dummy variables when matching, do not include Y or W in this matrix}
 
 \item{p.0}{a vector of outcome probabilities under control}
 
@@ -126,9 +126,8 @@ EB.out
 # alternatively, use a dataframe of matched patients and calculate the C-for-Benefit
 out.matched <- match.patients(Y=Y, W=W, X=X,
                               p.0=p.0, p.1=p.1, tau.hat=tau.hat,
-                              CI=FALSE, message=TRUE,
-                              measure="nearest", distance="mahalanobis",
-                              estimand=NULL)
+                              print=TRUE, measure="nearest",
+                              distance="mahalanobis", estimand=NULL)
 EB.out <- E.for.Benefit(matched.patients=out.matched$df.matched.pairs,
                         CI=TRUE, nr.bootstraps=100, message=TRUE)
 EB.out

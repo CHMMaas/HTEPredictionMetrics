@@ -11,6 +11,7 @@ match.patients(
   p.0,
   p.1,
   tau.hat,
+  print = FALSE,
   measure = "nearest",
   distance = "mahalanobis",
   estimand = NULL,
@@ -22,13 +23,15 @@ match.patients(
 
 \item{W}{a vector of treatment assignment; 1 for active treatment; 0 for control}
 
-\item{X}{a matrix of patient characteristics or individualized treatment effect predictions, use as.matrix() if necessary, and do not include Y or W in this matrix}
+\item{X}{a matrix or data.frame of patient characteristics or individualized treatment effect predictions, categorical variables may be coded as.factor() to create dummy variables when matching, do not include Y or W in this matrix}
 
 \item{p.0}{a vector of outcome probabilities under control}
 
 \item{p.1}{a vector of outcome probabilities under active treatment}
 
 \item{tau.hat}{a vector of individualized treatment effect predictions}
+
+\item{print}{TRUE if the summary of matching needs to be printed}
 
 \item{measure}{measure option of matchit function from MatchIt package (default="nearest")}
 
@@ -70,14 +73,16 @@ set.seed(1)
 n <- 100
 Y <- sample(0:1, n, replace=TRUE)
 W <- sample(0:1, n, replace=TRUE)
-X <- matrix(rnorm(n), n, 3)
+X <- as.data.frame(matrix(rnorm(n), n, 3))
+colnames(X) <- c("varA", "varB", "varC")
+# categorical variable
+X$varD <- as.factor(sample(1:3, nrow(X), replace=TRUE))
 p.0 <- runif(n)
 p.1 <- runif(n)
 tau.hat <- runif(n)
 matched.patients <- match.patients(Y=Y, W=W, X=X,
                                    p.0=p.0, p.1=p.1, tau.hat=tau.hat,
-                                   CI=FALSE, message=TRUE,
-                                   measure="nearest", distance="mahalanobis",
-                                   estimand=NULL)
+                                   print=TRUE, measure="nearest",
+                                   distance="mahalanobis", estimand=NULL)
 matched.patients
 }
