@@ -105,29 +105,34 @@ match.patients <- function(Y, W, X,
   # match on covariates
   if (is.null(estimand)){
     if (sum(W==1) <= sum(W==0)){
-      # ATT: all control patients get matched with treated patient
+      # ATT: average of treatment effects for people who were assigned to treatment
+      # control units are selected to be matched with treated units
       estimand <- "ATT"
     } else if (sum(W==1) > sum(W==0)){
-      # ATC: all treated patients get matched with control patient
+      # ATC: average of treatment effects for people who were assigned to control
+      # treated units are selected to be matched with control units
       estimand <- "ATC"
     }
   }
-  match.formula <- eval(parse(text=paste("W ~ ", paste(colnames(data.df)[grepl("^X.", colnames(data.df))], collapse=" + ", sep=""))))
+  match.formula <- eval(parse(text=paste("W ~ ", paste(colnames(X), collapse=" + ", sep=""))))
   matched <- MatchIt::matchit(match.formula, data=data.df,
                               method=measure, distance=distance,
                               estimand=estimand, replace=FALSE, ...)
+
   if (print){
+    print(match.formula)
     print(summary(matched))
   }
 
   # get matches
-  matched.patients <- MatchIt::match.data(matched)
+  matched.patients <- MatchIt::match.data(matched, drop.unmatched=TRUE)
+  # print(table(matched.patients$subclass))
 
   # subtract subclass
   matched.patients$subclass <- as.numeric(matched.patients$subclass)
 
   # patient IDs of those who weren't matched
-  discarded <- dplyr::setdiff(data.df$match.id, MatchIt::get_matches(matched, data=data.df)$match.id)
+  discarded <- dplyr::setdiff(data.df$match.id, matched.patients$match.id)
 
   # sort on subclass and W
   matched.patients <- matched.patients[with(matched.patients, order(subclass, 1-W)), ]
