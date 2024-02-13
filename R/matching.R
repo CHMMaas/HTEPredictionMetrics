@@ -47,7 +47,7 @@
 #' n <- 100
 #' Y <- sample(0:1, n, replace=TRUE)
 #' W <- sample(0:1, n, replace=TRUE)
-#' X <- as.data.frame(matrix(rnorm(n), n, 3))
+#' X <- as.data.frame(matrix(rnorm(n*3), n, 3))
 #' colnames(X) <- c("varA", "varB", "varC")
 #' # categorical variable
 #' X$varD <- as.factor(sample(1:3, nrow(X), replace=TRUE))
@@ -97,6 +97,11 @@ match.patients <- function(Y, W, X,
 
   stopifnot("p.1 and tau.hat must be the same length" = length(p.1)==length(p.0))
 
+  # add names to columns of X if there are none
+  if (is.null(colnames(X))){
+    colnames(X) <- paste0("X", 1:ncol(X))
+  }
+
   # combine all data in one dataframe
   data.df <- data.frame(match.id=1:length(Y),
                         W=W, X=X, Y=Y,
@@ -114,7 +119,7 @@ match.patients <- function(Y, W, X,
       estimand <- "ATC"
     }
   }
-  match.formula <- eval(parse(text=paste("W ~ ", paste(colnames(X), collapse=" + ", sep=""))))
+  match.formula <- eval(parse(text=paste("W ~ ", paste(paste0("X.", colnames(X)), collapse=" + ", sep=""))))
   matched <- MatchIt::matchit(match.formula, data=data.df,
                               method=measure, distance=distance,
                               estimand=estimand, replace=FALSE, ...)

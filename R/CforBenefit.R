@@ -54,7 +54,7 @@
 #' n <- 100
 #' Y <- sample(0:1, n, replace=TRUE)
 #' W <- sample(0:1, n, replace=TRUE)
-#' X <- matrix(rnorm(n), n, 3)
+#' X <- matrix(rnorm(n*3), n, 3)
 #' p.0 <- runif(n)
 #' p.1 <- runif(n)
 #' tau.hat <- runif(n)
