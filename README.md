@@ -14,6 +14,8 @@ May 22, version 1.0.1, added functionality: X can also be of class "data.frame"
 
 June 1, version 1.0.2, added functionality: X can now also include categorical variables coded as.factor() that will be dummified when matching, use the added print option to see the summary statement of MatchIt::matchit()
 
+May 14, small update in documentation emphasizing that Y is assumed to be unfavourable
+
 # Install 
 
 library(remotes)
