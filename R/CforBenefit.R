@@ -11,7 +11,7 @@
 #' @importFrom dplyr slice
 #' @importFrom stats quantile
 #'
-#' @param Y a vector of binary outcomes; 1 if an (unfavourable) event; 0 if not
+#' @param Y a vector of binary outcomes; 1 if an unfavourable event; 0 if not
 #' @param W a vector of treatment assignment; 1 for active treatment; 0 for control (or alternative treatment), note: make sure that W consists only of values of 0 and 1
 #' @param X a matrix or data.frame of patient characteristics or individualized treatment effect predictions, categorical variables may be coded as.factor() to create dummy variables when matching, do not include Y or W in this matrix
 #' @param p.0 a vector of outcome probabilities under control (or alternative treatment)
