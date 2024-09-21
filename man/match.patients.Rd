@@ -19,7 +19,7 @@ match.patients(
 )
 }
 \arguments{
-\item{Y}{a vector of binary outcomes; 1 if an (unfavourable) event; 0 if not}
+\item{Y}{a vector of binary outcomes; 1 if an unfavourable event; 0 if not}
 
 \item{W}{a vector of treatment assignment; 1 for active treatment; 0 for control}
 
@@ -73,7 +73,7 @@ set.seed(1)
 n <- 100
 Y <- sample(0:1, n, replace=TRUE)
 W <- sample(0:1, n, replace=TRUE)
-X <- as.data.frame(matrix(rnorm(n), n, 3))
+X <- as.data.frame(matrix(rnorm(n*3), n, 3))
 colnames(X) <- c("varA", "varB", "varC")
 # categorical variable
 X$varD <- as.factor(sample(1:3, nrow(X), replace=TRUE))

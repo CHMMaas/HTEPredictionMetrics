@@ -22,7 +22,7 @@ C.for.Benefit(
 )
 }
 \arguments{
-\item{Y}{a vector of binary outcomes; 1 if an (unfavourable) event; 0 if not}
+\item{Y}{a vector of binary outcomes; 1 if an unfavourable event; 0 if not}
 
 \item{W}{a vector of treatment assignment; 1 for active treatment; 0 for control (or alternative treatment), note: make sure that W consists only of values of 0 and 1}
 
@@ -87,7 +87,7 @@ set.seed(1)
 n <- 100
 Y <- sample(0:1, n, replace=TRUE)
 W <- sample(0:1, n, replace=TRUE)
-X <- matrix(rnorm(n), n, 3)
+X <- matrix(rnorm(n*3), n, 3)
 p.0 <- runif(n)
 p.1 <- runif(n)
 tau.hat <- runif(n)

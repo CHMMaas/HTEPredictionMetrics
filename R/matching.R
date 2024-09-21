@@ -151,7 +151,7 @@ match.patients <- function(Y, W, X,
   matched.p.0 <- (1-matched.patients$W)*matched.patients$p.0
   matched.patients$matched.p.0 <- rep(matched.p.0[matched.p.0!=0], each=2)
 
-  # matched p.1 = P[Y = 1| W = 1] so the probability of an outcome given no treatment of the treated patient
+  # matched p.1 = P[Y = 1| W = 1] so the probability of an outcome given treatment of the treated patient
   matched.p.1 <- matched.patients$W*matched.patients$p.1
   matched.patients$matched.p.1 <- rep(matched.p.1[matched.p.1!=0], each=2)
 
